@@ -14,7 +14,7 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  width: 450,
   bgcolor: COLORS.gradient.start,
   border: '2px solid #000',
   boxShadow: 24,
@@ -25,13 +25,13 @@ export function FeatureUpcoming({ open, featureName, onClose }: FeatureUpcomingP
   return (
     <Modal open={open} onClose={onClose}>
       <Box sx={style}>
-        <Player autoplay src={animation} style={{ width: 400 }}></Player>
+        <Player autoplay loop src={animation} style={{ width: 350 }}></Player>
         <ColumnBox gap={1}>
           <Typography variant='h6' color='white' textAlign='center'>
-            Our team is working to bring you {featureName} soon!
+            {featureName} is coming soon!
           </Typography>
           <Typography color='grey' textAlign='center'>
-            Let us know your expectations with the feature <br />
+            Our team is working to bring you this feature.Let us know your expectations <br />
             <Link underline='hover' color='lightgrey' href='mailto:wish@chatapp.com'>
               wish@chatapp.com
             </Link>

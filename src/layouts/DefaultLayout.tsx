@@ -6,7 +6,7 @@ export default function DefaultLayout() {
   return (
     <Box display='flex' height='100vh'>
       <SideBar />
-      <Box>
+      <Box flexGrow={1}>
         <Outlet />
       </Box>
     </Box>

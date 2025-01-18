@@ -9,7 +9,7 @@ import {
   Theme,
   Typography,
 } from '@mui/material';
-import { GPT } from 'src/assets/svgs';
+import { GPT } from 'src/assets/images/svgs';
 import usePersistedState from 'src/hooks/usePersistedState';
 import MuiDrawer from '@mui/material/Drawer';
 import {
