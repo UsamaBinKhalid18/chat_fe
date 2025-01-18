@@ -10,6 +10,7 @@
       "src/*": ["./src/*"]
     },
     "jsx": "react-jsx",
+    "types": ["vite-plugin-svgr/client"],
 
     /* Bundler mode */
     "moduleResolution": "bundler",
