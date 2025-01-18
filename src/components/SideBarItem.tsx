@@ -15,7 +15,7 @@ const StyledListItemButton = styled(ListItemButton, {
 })<{ collapsed: boolean }>`
   flex-direction: ${({ collapsed }) => (collapsed ? 'column' : 'row')};
   gap: ${({ collapsed }) => (collapsed ? '0px' : '12px')};
-  padding: 4px 12px;
+  padding: ${({ collapsed }) => (collapsed ? '8px 10px' : '4px 10px')};
   width: 100%;
   color: white;
   border-radius: 8px;
@@ -35,7 +35,8 @@ export function SideBarItem({ icon, title, collapsedTitle, onClick, collapsed }:
       </ListItemIcon>
       <ListItemText
         primary={collapsed ? collapsedTitle || title : title}
-        sx={{ color: 'white', fontSize: collapsed ? '12px !important' : '14px' }}
+        sx={{ marginBottom: 0 }}
+        slotProps={{ primary: { variant: 'caption' } }}
       />
     </StyledListItemButton>
   );

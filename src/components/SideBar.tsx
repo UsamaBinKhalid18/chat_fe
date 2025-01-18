@@ -32,6 +32,7 @@ import { useState } from 'react';
 import { UserMenu } from './UserMenu';
 import ColumnBox from './common/ColumnBox';
 import { SideBarItem } from './SideBarItem';
+import { FeatureUpcoming } from './FeatureUpcoming';
 
 const drawerWidth = 240;
 const commonStyles = (): CSSObject => ({
@@ -146,12 +147,73 @@ const MenuSubtitle = styled(Typography)`
   margin-top: 30px;
   margin-bottom: 2px;
   font-size: 12px;
+  padding-left: 8px;
 `;
+
+type MenuType = {
+  title: string;
+  items: MenuItemType[];
+};
+
+type MenuItemType = {
+  icon: JSX.Element;
+  title: string;
+  collapsedTitle?: string;
+  onClick?: () => void;
+};
+const menuItems: MenuType[] = [
+  {
+    title: 'Tools',
+    items: [
+      {
+        icon: <Message htmlColor='white' />,
+        title: 'AI Chat',
+        collapsedTitle: 'Chat',
+      },
+      {
+        icon: <TravelExplore htmlColor='white' />,
+        title: 'AI Search Engine',
+        collapsedTitle: 'Search',
+      },
+      {
+        icon: <Image htmlColor='white' />,
+        title: 'Image Generation',
+        collapsedTitle: 'Image',
+      },
+      {
+        icon: <MusicNote htmlColor='white' />,
+        title: 'Music Generation',
+        collapsedTitle: 'Music',
+      },
+    ],
+  },
+  {
+    title: 'Others',
+    items: [
+      {
+        icon: <Extension htmlColor='white' />,
+        title: 'Extension',
+        collapsedTitle: 'Extension',
+      },
+      {
+        icon: <Help htmlColor='white' />,
+        title: 'Support',
+      },
+      {
+        icon: <CreditCard htmlColor='white' />,
+        title: 'Pricing Plans',
+        collapsedTitle: 'Pricing',
+      },
+    ],
+  },
+];
 
 export default function SideBar() {
   const [open, setOpen] = usePersistedState('sideMenuOpen', true);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const isFooterMenuOpen = Boolean(anchorEl);
+  const [selectedFeature, setSelectedFeature] = useState('');
+  const [isFeatureUpcomingOpen, setIsFeatureUpcomingOpen] = useState(false);
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     setAnchorEl(event.currentTarget);
@@ -191,64 +253,31 @@ export default function SideBar() {
             <Typography>{open ? 'Start New' : 'New'}</Typography>
           </StartNewButton>
           <ColumnBox alignItems={open ? 'start' : 'center'} gap='4px'>
-            {open ? (
-              <MenuSubtitle>Tools</MenuSubtitle>
-            ) : (
-              <Divider sx={{ width: '40px', margin: '14px', borderColor: 'white' }} />
-            )}
-            <SideBarItem
-              icon={<Message htmlColor='white' />}
-              title='AI Chat'
-              collapsedTitle='Chat'
-              collapsed={!open}
-              onClick={() => {}}
-            />
-            <SideBarItem
-              icon={<TravelExplore htmlColor='white' />}
-              title='AI Search Engine'
-              collapsedTitle='Search'
-              collapsed={!open}
-              onClick={() => {}}
-            />
-            <SideBarItem
-              icon={<Image htmlColor='white' />}
-              title='Image Generation'
-              collapsedTitle='Image'
-              collapsed={!open}
-              onClick={() => {}}
-            />
-            <SideBarItem
-              icon={<MusicNote htmlColor='white' />}
-              title='Music Generation'
-              collapsedTitle='Music'
-              collapsed={!open}
-              onClick={() => {}}
-            />
-            {open ? (
-              <MenuSubtitle>Others</MenuSubtitle>
-            ) : (
-              <Divider sx={{ width: '40px', margin: '14px', borderColor: 'white' }} />
-            )}
-            <SideBarItem
-              icon={<Extension htmlColor='white' />}
-              title='Extension'
-              collapsedTitle='Extension'
-              collapsed={!open}
-              onClick={() => {}}
-            />
-            <SideBarItem
-              icon={<Help htmlColor='white' />}
-              title='Support'
-              onClick={() => {}}
-              collapsed={!open}
-            />
-            <SideBarItem
-              icon={<CreditCard htmlColor='white' />}
-              title='Pricing Plans'
-              collapsedTitle='Pricing'
-              collapsed={!open}
-              onClick={() => {}}
-            />
+            {menuItems.map((menu) => (
+              <>
+                {open ? (
+                  <MenuSubtitle>{menu.title}</MenuSubtitle>
+                ) : (
+                  <Divider sx={{ width: '40px', margin: '14px', borderColor: 'white' }} />
+                )}
+                {menu.items.map((item) => (
+                  <SideBarItem
+                    key={item.title}
+                    icon={item.icon}
+                    title={item.title}
+                    collapsedTitle={item.collapsedTitle}
+                    onClick={
+                      item.onClick ??
+                      (() => {
+                        setSelectedFeature(item.title);
+                        setIsFeatureUpcomingOpen(true);
+                      })
+                    }
+                    collapsed={!open}
+                  />
+                ))}
+              </>
+            ))}
           </ColumnBox>
         </Box>
         <DrawerFooter>
@@ -281,6 +310,11 @@ export default function SideBar() {
           <Expand htmlColor='white' />
         </StyledIconButton>
       )}
+      <FeatureUpcoming
+        open={isFeatureUpcomingOpen}
+        featureName={selectedFeature}
+        onClose={() => setIsFeatureUpcomingOpen(false)}
+      />
     </>
   );
 }
