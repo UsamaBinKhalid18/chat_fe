@@ -5,6 +5,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { styled, Typography } from '@mui/material';
 import { COLORS } from 'src/theme/COLORS';
 import { Logout, Settings } from '@mui/icons-material';
+import { useLogout } from 'src/hooks/useLogout';
 
 interface UserMenuProps {
   handleClose: (e: MouseEvent | TouchEvent | React.MouseEvent) => void;
@@ -33,6 +34,7 @@ const StyledMenuItem = styled(MenuItem)`
 
 export function UserMenu({ handleClose, anchorEl }: UserMenuProps) {
   const isFooterMenuOpen = Boolean(anchorEl);
+  const logout = useLogout();
   return (
     <ClickAwayListener onClickAway={(e) => handleClose(e)}>
       <StyledMenu
@@ -52,7 +54,12 @@ export function UserMenu({ handleClose, anchorEl }: UserMenuProps) {
           <Settings htmlColor='white' />
           <Typography color='white'>Settings</Typography>
         </StyledMenuItem>
-        <StyledMenuItem onClick={handleClose}>
+        <StyledMenuItem
+          onClick={(e) => {
+            logout();
+            handleClose(e);
+          }}
+        >
           <Logout htmlColor='white' />
           <Typography color='white'>Logout</Typography>
         </StyledMenuItem>

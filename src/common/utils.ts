@@ -1,6 +1,10 @@
 export const utils = {
-  getInitials(name: string) {
-    return `${name.split(' ')[0][0].toUpperCase()}${(name.split(' ').at(-1) ??
-      '')[0].toUpperCase()}`;
+  getErrorString: (error: any) => {
+    let textError = '';
+    const arr = Object.values(error.data).flat();
+    for (let i = 0; i < arr.length; i += 1) {
+      textError += `${arr[i]}\n`;
+    }
+    return textError;
   },
 };

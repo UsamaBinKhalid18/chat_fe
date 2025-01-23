@@ -27,12 +27,14 @@ import {
 } from '@mui/icons-material';
 import { COLORS } from 'src/theme/colors';
 import RowBox from './common/RowBox';
-import { utils } from 'src/common/utils';
 import { useState } from 'react';
 import { UserMenu } from './UserMenu';
 import ColumnBox from './common/ColumnBox';
 import { SideBarItem } from './SideBarItem';
 import { FeatureUpcoming } from './FeatureUpcoming';
+import { useSelector } from 'react-redux';
+import { selectCurrentUser } from 'src/redux/reducers/authSlice';
+import AuthenticationModal from './Authentication/AuthenticationModal';
 
 const drawerWidth = 240;
 const commonStyles = (): CSSObject => ({
@@ -214,6 +216,8 @@ export default function SideBar() {
   const isFooterMenuOpen = Boolean(anchorEl);
   const [selectedFeature, setSelectedFeature] = useState('');
   const [isFeatureUpcomingOpen, setIsFeatureUpcomingOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const user = useSelector(selectCurrentUser);
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     setAnchorEl(event.currentTarget);
@@ -281,21 +285,40 @@ export default function SideBar() {
           </ColumnBox>
         </Box>
         <DrawerFooter>
-          <UserMenu handleClose={handleClose} anchorEl={anchorEl} />
-          <UserContainer onClick={handleClick}>
-            <StyledAvatar children={utils.getInitials('Usama Bin Khalid')} />
-            {open && (
-              <>
-                <Typography variant='body2' color='white'>
-                  Usama Bin Khalid
-                </Typography>
+          {user ? (
+            <>
+              <UserMenu handleClose={handleClose} anchorEl={anchorEl} />
+              <UserContainer onClick={handleClick}>
+                <StyledAvatar children={user.email.charAt(0).toUpperCase()} src={user.picture} />
+                {open && (
+                  <>
+                    <Typography variant='body2' color='white'>
+                      {user.first_name ? `${user.first_name} ${user.last_name}` : user.email}
+                    </Typography>
 
-                <FooterIconButton open={isFooterMenuOpen}>
-                  <KeyboardArrowDown htmlColor='white' />
-                </FooterIconButton>
-              </>
-            )}
-          </UserContainer>
+                    <FooterIconButton open={isFooterMenuOpen}>
+                      <KeyboardArrowDown htmlColor='white' />
+                    </FooterIconButton>
+                  </>
+                )}
+              </UserContainer>
+            </>
+          ) : (
+            <>
+              <Button
+                variant='contained'
+                fullWidth
+                sx={{ backgroundColor: '#2727e3', color: 'white', margin: open ? '16px' : '8px' }}
+                onClick={() => setAuthModalOpen(true)}
+              >
+                <Typography>Log In</Typography>
+              </Button>
+              <AuthenticationModal
+                open={authModalOpen}
+                handleClose={() => setAuthModalOpen(false)}
+              />
+            </>
+          )}
         </DrawerFooter>
       </Drawer>
       {!open && (

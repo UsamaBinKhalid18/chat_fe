@@ -5,7 +5,6 @@ import {
   Code,
   DocumentScanner,
   Edit,
-  Help,
   Image,
   Language,
   Psychology,
@@ -13,14 +12,7 @@ import {
   RemoveRedEye,
   Send,
 } from '@mui/icons-material';
-import {
-  Grid2,
-  IconButton,
-  TextField,
-  ToggleButton,
-  ToggleButtonGroup,
-  Typography,
-} from '@mui/material';
+import { IconButton, TextField, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { useState } from 'react';
 import { IMAGES } from 'src/assets/images';
 import ColumnBox from 'src/components/common/ColumnBox';
