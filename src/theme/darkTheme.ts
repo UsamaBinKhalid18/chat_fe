@@ -11,7 +11,7 @@ const darkTheme = createTheme({
     },
     background: {
       default: '#121212', // Dark background
-      paper: '#1e1e1e', // Slightly lighter for surfaces
+      paper: '#222', // Slightly lighter for surfaces
     },
     action: {
       hover: '#333333', // Darker hover color

@@ -32,9 +32,11 @@ const baseQueryWithRefresh: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQu
   let response = await baseQuery(args, api, extraOptions);
 
   if (response.error && response.error.status === errorCodes.UNAUTHORIZED_CODE) {
+    console.log('here');
     if (!authMutex.isLocked()) {
       const release = await authMutex.acquire();
       try {
+        console.log('here');
         const refresh_token = (api.getState() as RootState).auth.refresh;
         if (refresh_token) {
           const userId = (api.getState() as RootState).auth.user!.id;

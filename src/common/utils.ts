@@ -7,4 +7,8 @@ export const utils = {
     }
     return textError;
   },
+  getDateString: (date: string) => {
+    const d = new Date(date);
+    return `${d.getDate()} ${d.toLocaleString('default', { month: 'short' })}, ${d.getFullYear()}`;
+  },
 };

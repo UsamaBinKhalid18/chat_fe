@@ -32,9 +32,11 @@ import { UserMenu } from './UserMenu';
 import ColumnBox from './common/ColumnBox';
 import { SideBarItem } from './SideBarItem';
 import { FeatureUpcoming } from './FeatureUpcoming';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectCurrentUser } from 'src/redux/reducers/authSlice';
 import AuthenticationModal from './Authentication/AuthenticationModal';
+import { useNavigate } from 'react-router-dom';
+import { selectLoginModal, setLoginModal } from 'src/redux/reducers/notificationSlice';
 
 const drawerWidth = 240;
 const commonStyles = (): CSSObject => ({
@@ -161,6 +163,7 @@ type MenuItemType = {
   icon: JSX.Element;
   title: string;
   collapsedTitle?: string;
+  navigationUrl?: string;
   onClick?: () => void;
 };
 const menuItems: MenuType[] = [
@@ -200,11 +203,13 @@ const menuItems: MenuType[] = [
       {
         icon: <Help htmlColor='white' />,
         title: 'Support',
+        navigationUrl: '/support',
       },
       {
         icon: <CreditCard htmlColor='white' />,
         title: 'Pricing Plans',
         collapsedTitle: 'Pricing',
+        navigationUrl: '/pricing',
       },
     ],
   },
@@ -216,8 +221,10 @@ export default function SideBar() {
   const isFooterMenuOpen = Boolean(anchorEl);
   const [selectedFeature, setSelectedFeature] = useState('');
   const [isFeatureUpcomingOpen, setIsFeatureUpcomingOpen] = useState(false);
-  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const authModalOpen = useSelector(selectLoginModal);
   const user = useSelector(selectCurrentUser);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     setAnchorEl(event.currentTarget);
@@ -252,6 +259,7 @@ export default function SideBar() {
               display: 'flex',
               flexDirection: open ? 'row' : 'column',
             }}
+            onClick={() => navigate('/')}
           >
             <Add htmlColor={COLORS.sideBarIcon} />
             <Typography>{open ? 'Start New' : 'New'}</Typography>
@@ -271,11 +279,13 @@ export default function SideBar() {
                     title={item.title}
                     collapsedTitle={item.collapsedTitle}
                     onClick={
-                      item.onClick ??
-                      (() => {
-                        setSelectedFeature(item.title);
-                        setIsFeatureUpcomingOpen(true);
-                      })
+                      item.navigationUrl
+                        ? () => navigate(item.navigationUrl ?? '/')
+                        : item.onClick ??
+                          (() => {
+                            setSelectedFeature(item.title);
+                            setIsFeatureUpcomingOpen(true);
+                          })
                     }
                     collapsed={!open}
                   />
@@ -289,7 +299,10 @@ export default function SideBar() {
             <>
               <UserMenu handleClose={handleClose} anchorEl={anchorEl} />
               <UserContainer onClick={handleClick}>
-                <StyledAvatar children={user.email.charAt(0).toUpperCase()} src={user.picture} />
+                <StyledAvatar
+                  children={user.email.charAt(0).toUpperCase()}
+                  src={user.picture ?? undefined}
+                />
                 {open && (
                   <>
                     <Typography variant='body2' color='white'>
@@ -309,13 +322,13 @@ export default function SideBar() {
                 variant='contained'
                 fullWidth
                 sx={{ backgroundColor: '#2727e3', color: 'white', margin: open ? '16px' : '8px' }}
-                onClick={() => setAuthModalOpen(true)}
+                onClick={() => dispatch(setLoginModal(true))}
               >
                 <Typography>Log In</Typography>
               </Button>
               <AuthenticationModal
                 open={authModalOpen}
-                handleClose={() => setAuthModalOpen(false)}
+                handleClose={() => dispatch(setLoginModal(false))}
               />
             </>
           )}

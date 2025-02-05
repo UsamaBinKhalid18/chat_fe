@@ -13,7 +13,7 @@ import {
   Send,
 } from '@mui/icons-material';
 import { IconButton, TextField, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { IMAGES } from 'src/assets/images';
 import ColumnBox from 'src/components/common/ColumnBox';
 import RowBox from 'src/components/common/RowBox';
@@ -171,7 +171,7 @@ export function Home() {
             <Send />
           </IconButton>
         </RowBox>
-        <RowBox flexWrap='wrap' justifyContent='center' width='50%' mt={5} gap={2}>
+        <RowBox flexWrap='wrap' justifyContent='center' width='80%' maxWidth='700px' mt={5} gap={2}>
           {autoFills.map((autoFill, index) => (
             <ColumnBox
               key={index}
@@ -192,7 +192,7 @@ export function Home() {
               >
                 {autoFill.icon}
               </IconButton>
-              <Typography variant='caption' textAlign='center'>
+              <Typography variant='caption' textAlign='center' noWrap>
                 {autoFill.name}
               </Typography>
             </ColumnBox>

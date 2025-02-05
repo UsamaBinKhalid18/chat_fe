@@ -10,9 +10,11 @@ type Notification = {
 
 interface NotificationState {
   notifications: Notification[];
+  loginModal: boolean;
 }
 const initialState: NotificationState = {
   notifications: [],
+  loginModal: false,
 };
 
 const notificationSlice = createSlice({
@@ -30,10 +32,14 @@ const notificationSlice = createSlice({
     removeNotificationById: (state, action: PayloadAction<number>) => {
       state.notifications = state.notifications.filter((n) => n.id !== action.payload);
     },
+    setLoginModal: (state, action: PayloadAction<boolean>) => {
+      state.loginModal = action.payload;
+    },
   },
 });
 
-export const { addNotification, removeNotificationById } = notificationSlice.actions;
+export const { addNotification, removeNotificationById, setLoginModal } = notificationSlice.actions;
 
 export default notificationSlice.reducer;
 export const selectNotifications = (state: RootState) => state.notification.notifications;
+export const selectLoginModal = (state: RootState) => state.notification.loginModal;

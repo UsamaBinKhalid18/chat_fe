@@ -1,15 +1,13 @@
-import { Box, Button, Modal, TextField, Typography } from '@mui/material';
-import ColumnBox from '../common/ColumnBox';
-import { useFormik } from 'formik';
-import { errorCodes } from 'src/common/constants';
+import { Box, Button, Modal, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useGoogleLoginMutation, useLoginMutation } from 'src/apis/authApi';
+import { useGoogleLoginMutation } from 'src/apis/authApi';
 import { utils } from 'src/common/utils';
-import { loginSchema } from 'src/schema/login';
 import { COLORS } from 'src/theme/colors';
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import Login from './Login';
 import Signup from './Signup';
+import RowBox from '../common/RowBox';
+import { useNavigate } from 'react-router-dom';
 
 interface AuthenticationModalProps {
   open: boolean;
@@ -33,6 +31,7 @@ export default function AuthenticationModal({ open, handleClose }: Authenticatio
   const [backendError, setBackendError] = useState<string>('');
   const [isSignup, setIsSignup] = useState(false);
   const [googleLogin] = useGoogleLoginMutation();
+  const navigate = useNavigate();
   const handleGoogleLogin = async (credentialResponse: CredentialResponse) => {
     setBackendError('');
     try {
@@ -55,14 +54,25 @@ export default function AuthenticationModal({ open, handleClose }: Authenticatio
     <Modal open={open} onClose={handleClose}>
       <Box sx={style}>
         {isSignup ? <Signup handleClose={handleClose} /> : <Login handleClose={handleClose} />}
-        <Button
-          onClick={() => {
-            setIsSignup((prev) => !prev);
-          }}
-          sx={{ ':hover': { background: 'none' }, mt: 1 }}
-        >
-          {isSignup ? 'Login' : 'Signup'}
-        </Button>
+        <RowBox justifyContent='space-between'>
+          <Button
+            onClick={() => {
+              setIsSignup((prev) => !prev);
+            }}
+            sx={{ ':hover': { background: 'none' }, mt: 1 }}
+          >
+            {isSignup ? 'Login' : 'Signup'}
+          </Button>
+          <Button
+            onClick={() => {
+              navigate('/password-reset');
+              handleClose();
+            }}
+            sx={{ ':hover': { background: 'none' }, mt: 1 }}
+          >
+            Forgot Password?
+          </Button>
+        </RowBox>
         <Typography textAlign='center' mb={2}>
           OR
         </Typography>

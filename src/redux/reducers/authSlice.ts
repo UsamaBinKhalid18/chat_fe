@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { authApi } from 'src/apis/authApi';
 import { RootState } from 'src/redux/store.ts';
 
-interface User {
+export interface User {
   id: number;
   email: string;
   first_name: string | null;
@@ -41,6 +41,7 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     const handleAuthFulfilled = (state: AuthState, action: PayloadAction<AuthState>) => {
       const { user, access, refresh, is_active } = action.payload;
+      console.log('refresh', refresh);
       return { ...state, user, access, refresh, is_active };
     };
     builder

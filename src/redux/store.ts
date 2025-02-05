@@ -5,6 +5,7 @@ import storage from 'redux-persist/lib/storage';
 import { api } from 'src/apis/api.ts';
 import authReducer from 'src/redux/reducers/authSlice.ts';
 import notificationReducer from 'src/redux/reducers/notificationSlice.ts';
+import subscripionReducer from 'src/redux/reducers/subscriptionSlice.ts';
 
 const persistConfig = {
   key: 'auth',
@@ -18,6 +19,7 @@ export const store = configureStore({
     [api.reducerPath]: api.reducer,
     auth: persistedReducer,
     notification: notificationReducer,
+    subscription: subscripionReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
