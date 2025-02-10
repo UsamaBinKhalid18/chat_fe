@@ -1,16 +1,19 @@
 import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import './index.css';
-import App from './App.tsx';
-import { BrowserRouter } from 'react-router-dom';
-import { CssBaseline, ThemeProvider } from '@mui/material';
-import darkTheme from './theme/darkTheme.ts';
-import { persistStore } from 'redux-persist';
-import { store } from './redux/store.ts';
 import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react';
+import { BrowserRouter } from 'react-router-dom';
+
+import { CssBaseline, ThemeProvider } from '@mui/material';
+
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { createRoot } from 'react-dom/client';
+import { persistStore } from 'redux-persist';
+import { PersistGate } from 'redux-persist/integration/react';
+
+import App from './App.tsx';
 import { GOOGLE_CLIENT_ID } from './config.ts';
+import './index.css';
+import { store } from './redux/store.ts';
+import darkTheme from './theme/darkTheme.ts';
 
 const persistor = persistStore(store);
 createRoot(document.getElementById('root')!).render(

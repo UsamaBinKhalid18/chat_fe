@@ -1,4 +1,5 @@
 import { Navigate, useParams } from 'react-router-dom';
+
 import { useActivateUserQuery } from 'src/apis/authApi';
 import ColumnBox from 'src/components/common/ColumnBox';
 

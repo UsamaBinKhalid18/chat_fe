@@ -68,6 +68,7 @@ export default [
     },
     rules: {
       ...tseslint.configs.recommended.rules,
+      '@typescript-eslint/no-explicit-any': 'off',
     },
   },
 ];

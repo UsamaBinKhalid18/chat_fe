@@ -1,11 +1,15 @@
 import React from 'react';
+
+import { Logout, Settings } from '@mui/icons-material';
+import { styled, Typography } from '@mui/material';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { styled, Typography } from '@mui/material';
-import { COLORS } from 'src/theme/COLORS';
-import { Logout, Settings } from '@mui/icons-material';
+
 import { useLogout } from 'src/hooks/useLogout';
+import { COLORS } from 'src/theme/COLORS';
+
+
 
 interface UserMenuProps {
   handleClose: (e: MouseEvent | TouchEvent | React.MouseEvent) => void;

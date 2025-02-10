@@ -1,7 +1,9 @@
-import { Box, Button, styled, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+
+import { Box, Button, styled, Typography, useTheme } from '@mui/material';
+
 import {
   useCancelSubscriptionMutation,
   useCreateStripeSessionMutation,
@@ -74,6 +76,7 @@ export default function PricingPlans() {
   const [cancelSubsciption] = useCancelSubscriptionMutation();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const theme = useTheme();
 
   if (searchParams.has('success')) {
     dispatch(
@@ -128,7 +131,7 @@ export default function PricingPlans() {
   }, [user, dispatch]);
 
   return (
-    <ColumnBox gap={4} mt={5}>
+    <ColumnBox gap={4} mt={5} width='90%' maxWidth={800}>
       <Box>
         <Typography textAlign='center' variant='h3'>
           Pricing Plans
@@ -138,14 +141,7 @@ export default function PricingPlans() {
         </Typography>
       </Box>
       {data?.is_active && (
-        <ColumnBox
-          p={2}
-          borderRadius='8px'
-          bgcolor='background.paper'
-          width='90%'
-          maxWidth={800}
-          alignItems='start'
-        >
+        <ColumnBox p={2} borderRadius='8px' bgcolor='background.paper' alignItems='start'>
           <Typography>Current Plan</Typography>
           <RowBox width='100%' justifyContent='start' gap={2} flexWrap='wrap'>
             <ColumnBox alignItems='start'>
@@ -187,19 +183,19 @@ export default function PricingPlans() {
             maxWidth={300}
             alignItems='start'
             position='relative'
-            border={plan.id == 2 ? '2px solid #119' : 'none'}
+            border={plan.id == 2 ? `2px solid ${theme.palette.success.dark}` : 'none'}
           >
             {plan.id == 2 && (
               <Typography
                 color='white'
                 sx={{
                   position: 'absolute',
-                  top: '-16px',
+                  top: '-15px',
                   left: '50%',
                   transform: 'translateX(-50%)',
-                  bgcolor: '#119',
-                  px: 2,
-                  py: '2px',
+                  bgcolor: theme.palette.success.dark,
+                  px: 2.5,
+                  py: '1px',
                   borderRadius: '20px',
                 }}
               >
@@ -211,10 +207,10 @@ export default function PricingPlans() {
               {plan.discount > 0 && (
                 <Typography
                   color='secondary'
-                  border='1px solid'
+                  border='2px solid'
                   borderColor='success.dark'
                   borderRadius='20px'
-                  px={1}
+                  padding='1px 4px 0px 6px'
                 >
                   Save {plan.discount}%
                 </Typography>

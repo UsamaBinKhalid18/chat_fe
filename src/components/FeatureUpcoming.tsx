@@ -1,7 +1,9 @@
-import { Player } from '@lottiefiles/react-lottie-player';
 import { Box, Link, Modal, Typography } from '@mui/material';
-import { COLORS } from 'src/theme/colors';
+
+import { Player } from '@lottiefiles/react-lottie-player';
 import animation from 'src/assets/animations/feature-upcoming.json';
+import { COLORS } from 'src/theme/colors';
+
 import ColumnBox from './common/ColumnBox';
 interface FeatureUpcomingProps {
   open: boolean;

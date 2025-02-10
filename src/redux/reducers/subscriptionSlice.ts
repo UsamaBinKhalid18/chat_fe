@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { paymentsApi, Subscription } from 'src/apis/paymentsApi';
+
 import { RootState } from '../store';
 
 const initialState: Subscription = {

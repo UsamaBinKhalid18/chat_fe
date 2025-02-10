@@ -10,11 +10,11 @@ const darkTheme = createTheme({
       main: '#b2b2b2', // Pink
     },
     background: {
-      default: '#121212', // Dark background
-      paper: '#222', // Slightly lighter for surfaces
+      default: '#212121', // Dark background
+      paper: '#313131', // Slightly lighter for surfaces
     },
     action: {
-      hover: '#333333', // Darker hover color
+      hover: '#444', // Darker hover color
     },
     text: {
       primary: '#ffffff', // White text

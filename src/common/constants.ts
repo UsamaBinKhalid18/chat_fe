@@ -1,3 +1,5 @@
+import { IMAGES } from 'src/assets/images';
+
 export const errorCodes = {
   UNAUTHORIZED_CODE: 401,
 };
@@ -14,3 +16,15 @@ export const CLAUSES = {
   FIRST_NAME_REQUIRED: 'First name is required',
   LAST_NAME_REQUIRED: 'Last name is required',
 };
+
+export type AIModelType = {
+  name: string;
+  iconUrl: string;
+};
+
+export const aiModels: AIModelType[] = [
+  { name: 'OpenAI GPT 4o Mini', iconUrl: IMAGES.gpt },
+  { name: 'OpenAI GPT 4o', iconUrl: IMAGES.gpt },
+  { name: 'Google Gemini 1.5', iconUrl: IMAGES.gemini },
+  { name: 'Anthropic Claude', iconUrl: IMAGES.claude },
+];

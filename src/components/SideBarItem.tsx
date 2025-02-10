@@ -1,5 +1,7 @@
-import { ListItemButton, ListItemIcon, ListItemText, styled } from '@mui/material';
 import React from 'react';
+
+import { ListItemButton, ListItemIcon, ListItemText, styled } from '@mui/material';
+
 import { COLORS } from 'src/theme/colors';
 
 interface SideBarItemProps {

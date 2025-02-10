@@ -2,3 +2,12 @@ body {
   background-color: #212121;
   margin: 0;
 }
+
+p {
+  margin: 8px 0px;
+}
+
+li {
+  margin: 4px 0px;
+  line-height: 1.7 !important;
+}

@@ -1,13 +1,17 @@
-import { Box, Button, Modal, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { Box, Button, Modal, Typography } from '@mui/material';
+
+import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import { useGoogleLoginMutation } from 'src/apis/authApi';
 import { utils } from 'src/common/utils';
 import { COLORS } from 'src/theme/colors';
-import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
+
 import Login from './Login';
 import Signup from './Signup';
 import RowBox from '../common/RowBox';
-import { useNavigate } from 'react-router-dom';
+
 
 interface AuthenticationModalProps {
   open: boolean;

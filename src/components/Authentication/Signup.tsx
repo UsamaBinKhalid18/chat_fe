@@ -1,13 +1,16 @@
-import { Box, Button, TextField, Typography } from '@mui/material';
-import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+
+import { Box, Button, TextField, Typography } from '@mui/material';
+
+import { useFormik } from 'formik';
 import { useSignupMutation } from 'src/apis/authApi';
 import { errorCodes } from 'src/common/constants';
 import { utils } from 'src/common/utils';
-import { signupSchema } from 'src/schema/login';
-import ColumnBox from '../common/ColumnBox';
-import { useDispatch } from 'react-redux';
 import { addNotification } from 'src/redux/reducers/notificationSlice';
+import { signupSchema } from 'src/schema/login';
+
+import ColumnBox from '../common/ColumnBox';
 
 interface SignupModalProps {
   handleClose: () => void;

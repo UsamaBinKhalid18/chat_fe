@@ -41,7 +41,6 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     const handleAuthFulfilled = (state: AuthState, action: PayloadAction<AuthState>) => {
       const { user, access, refresh, is_active } = action.payload;
-      console.log('refresh', refresh);
       return { ...state, user, access, refresh, is_active };
     };
     builder
@@ -60,4 +59,5 @@ export const { logOut, updateAccessToken } = authSlice.actions;
 export default authSlice.reducer;
 export const selectCurrentUser = (state: RootState) => state.auth.user;
 export const selectAccessToken = (state: RootState) => state.auth.access;
+export const selectRefreshToken = (state: RootState) => state.auth.refresh;
 export const selectIsGoogleSignup = (state: RootState) => state.auth.isGoogleSignup;

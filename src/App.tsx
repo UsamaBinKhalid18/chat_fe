@@ -1,7 +1,9 @@
 import { Route, Routes } from 'react-router-dom';
+
 import './App.css';
 import DefaultLayout from './layouts/DefaultLayout';
 import ActivateAccount from './pages/ActivateAccount';
+import Chat from './pages/Chat';
 import { Home } from './pages/home';
 import PasswordReset from './pages/PasswordReset';
 import PricingPlans from './pages/PricingPlans';
@@ -14,6 +16,7 @@ function App() {
       <Routes>
         <Route element={<DefaultLayout />}>
           <Route path='/' element={<Home />} />
+          <Route path='/chat' element={<Chat />} />
           <Route path='/support' element={<Support />} />
           <Route path='/pricing' element={<PricingPlans />} />
           <Route path='*' element={<>404</>} />

@@ -1,17 +1,7 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  CSSObject,
-  Divider,
-  IconButton,
-  styled,
-  Theme,
-  Typography,
-} from '@mui/material';
-import { GPT } from 'src/assets/images/svgs';
-import usePersistedState from 'src/hooks/usePersistedState';
-import MuiDrawer from '@mui/material/Drawer';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
 import {
   Add,
   KeyboardTab as Collapse,
@@ -25,18 +15,32 @@ import {
   MusicNote,
   TravelExplore,
 } from '@mui/icons-material';
-import { COLORS } from 'src/theme/colors';
-import RowBox from './common/RowBox';
-import { useState } from 'react';
-import { UserMenu } from './UserMenu';
-import ColumnBox from './common/ColumnBox';
-import { SideBarItem } from './SideBarItem';
-import { FeatureUpcoming } from './FeatureUpcoming';
-import { useDispatch, useSelector } from 'react-redux';
+import {
+  Avatar,
+  Box,
+  Button,
+  CSSObject,
+  Divider,
+  IconButton,
+  styled,
+  Theme,
+  Typography,
+} from '@mui/material';
+import MuiDrawer from '@mui/material/Drawer';
+
+import { GPT } from 'src/assets/images/svgs';
+import usePersistedState from 'src/hooks/usePersistedState';
+import useResponsive from 'src/hooks/useResponsive';
 import { selectCurrentUser } from 'src/redux/reducers/authSlice';
-import AuthenticationModal from './Authentication/AuthenticationModal';
-import { useNavigate } from 'react-router-dom';
 import { selectLoginModal, setLoginModal } from 'src/redux/reducers/notificationSlice';
+import { COLORS } from 'src/theme/colors';
+
+import AuthenticationModal from './Authentication/AuthenticationModal';
+import ColumnBox from './common/ColumnBox';
+import RowBox from './common/RowBox';
+import { FeatureUpcoming } from './FeatureUpcoming';
+import { SideBarItem } from './SideBarItem';
+import { UserMenu } from './UserMenu';
 
 const drawerWidth = 240;
 const commonStyles = (): CSSObject => ({
@@ -92,24 +96,22 @@ const FooterIconButton = styled(StyledIconButton, {
   }
 `;
 
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme, open }) => ({
-    width: drawerWidth,
-    margin: 0,
-    padding: 0,
-    flexShrink: 0,
-    whiteSpace: 'nowrap',
-    boxSizing: 'border-box',
-    ...(open && {
-      ...openedMixin(theme),
-      '& .MuiDrawer-paper': openedMixin(theme),
-    }),
-    ...(!open && {
-      ...closedMixin(theme),
-      '& .MuiDrawer-paper': closedMixin(theme),
-    }),
+const Drawer = styled(MuiDrawer)(({ theme, open }) => ({
+  width: drawerWidth,
+  margin: 0,
+  padding: 0,
+  flexShrink: 0,
+  whiteSpace: 'nowrap',
+  boxSizing: 'border-box',
+  ...(open && {
+    ...openedMixin(theme),
+    '& .MuiDrawer-paper': openedMixin(theme),
   }),
-);
+  ...(!open && {
+    ...closedMixin(theme),
+    '& .MuiDrawer-paper': closedMixin(theme),
+  }),
+}));
 
 const DrawerFooter = styled('div')(() => ({
   display: 'flex',
@@ -216,7 +218,8 @@ const menuItems: MenuType[] = [
 ];
 
 export default function SideBar() {
-  const [open, setOpen] = usePersistedState('sideMenuOpen', true);
+  const { isSmallerScreen } = useResponsive();
+  const [open, setOpen] = usePersistedState('sideMenuOpen', !isSmallerScreen);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const isFooterMenuOpen = Boolean(anchorEl);
   const [selectedFeature, setSelectedFeature] = useState('');
@@ -225,6 +228,12 @@ export default function SideBar() {
   const user = useSelector(selectCurrentUser);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isSmallerScreen) {
+      setOpen(false);
+    }
+  }, []);
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     setAnchorEl(event.currentTarget);
@@ -236,7 +245,15 @@ export default function SideBar() {
   };
   return (
     <>
-      <Drawer variant='permanent' open={open}>
+      <Drawer
+        variant={isSmallerScreen ? 'temporary' : 'permanent'}
+        open={open}
+        onClose={() => setOpen(false)}
+        ModalProps={{
+          keepMounted: true, // Improves performance on mobile
+        }}
+        sx={{ height: '100vh' }}
+      >
         <DrawerHeader>
           <GPT color='white' style={{ minWidth: 36, minHeight: 36 }} />
           {open && (
@@ -259,7 +276,10 @@ export default function SideBar() {
               display: 'flex',
               flexDirection: open ? 'row' : 'column',
             }}
-            onClick={() => navigate('/')}
+            onClick={() => {
+              navigate('/');
+              if (isSmallerScreen) setOpen(false);
+            }}
           >
             <Add htmlColor={COLORS.sideBarIcon} />
             <Typography>{open ? 'Start New' : 'New'}</Typography>
@@ -268,9 +288,12 @@ export default function SideBar() {
             {menuItems.map((menu) => (
               <>
                 {open ? (
-                  <MenuSubtitle>{menu.title}</MenuSubtitle>
+                  <MenuSubtitle key={menu.title}>{menu.title}</MenuSubtitle>
                 ) : (
-                  <Divider sx={{ width: '40px', margin: '14px', borderColor: 'white' }} />
+                  <Divider
+                    key={menu.title}
+                    sx={{ width: '40px', margin: '14px', borderColor: 'white' }}
+                  />
                 )}
                 {menu.items.map((item) => (
                   <SideBarItem
@@ -280,7 +303,10 @@ export default function SideBar() {
                     collapsedTitle={item.collapsedTitle}
                     onClick={
                       item.navigationUrl
-                        ? () => navigate(item.navigationUrl ?? '/')
+                        ? () => {
+                            navigate(item.navigationUrl ?? '/');
+                            if (isSmallerScreen) setOpen(false);
+                          }
                         : item.onClick ??
                           (() => {
                             setSelectedFeature(item.title);
@@ -339,7 +365,7 @@ export default function SideBar() {
           onClick={() => setOpen(true)}
           sx={{
             position: 'absolute',
-            left: '86px',
+            left: isSmallerScreen ? '10px' : '86px',
             top: '10px',
           }}
         >

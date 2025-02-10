@@ -1,5 +1,7 @@
-import { Box } from '@mui/material';
 import { Outlet } from 'react-router-dom';
+
+import { Box } from '@mui/material';
+
 import SideBar from 'src/components/SideBar';
 import SnackbarQueue from 'src/components/SnackbarQueue';
 

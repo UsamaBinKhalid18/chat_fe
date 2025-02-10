@@ -4,6 +4,7 @@ import { FLUSH, PAUSE, PERSIST, persistReducer, PURGE, REGISTER, REHYDRATE } fro
 import storage from 'redux-persist/lib/storage';
 import { api } from 'src/apis/api.ts';
 import authReducer from 'src/redux/reducers/authSlice.ts';
+import chatCompletionSlice from 'src/redux/reducers/chatCompletionSlice.ts';
 import notificationReducer from 'src/redux/reducers/notificationSlice.ts';
 import subscripionReducer from 'src/redux/reducers/subscriptionSlice.ts';
 
@@ -20,6 +21,7 @@ export const store = configureStore({
     auth: persistedReducer,
     notification: notificationReducer,
     subscription: subscripionReducer,
+    chatCompletion: chatCompletionSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

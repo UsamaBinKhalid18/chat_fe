@@ -3,9 +3,6 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "eslint.format.enable": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
-  },
-  "[xml]": {
-    "editor.defaultFormatter": "redhat.vscode-xml"
+    "source.fixAll.eslint": "always"
   }
 }
