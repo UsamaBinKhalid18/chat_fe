@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { Button, TextField, Typography } from '@mui/material';
+import { Box, Button, TextField, Typography } from '@mui/material';
 
 import { useFormik } from 'formik';
 import { useResetPasswordMutation } from 'src/apis/authApi';
@@ -38,35 +38,29 @@ export default function PasswordReset() {
     },
   });
   return (
-    <ColumnBox
-      height='100vh'
-      width='50%'
-      maxWidth='450px'
-      margin='auto'
-      component='form'
-      gap={3}
-      onSubmit={formik.handleSubmit}
-    >
-      {success ? (
-        <>
-          <Typography variant='h4'>Password changed</Typography>
-          <Button onClick={() => navigate('/')}>Return Home to Login</Button>
-        </>
-      ) : (
-        <>
-          <TextField
-            label='New Password'
-            fullWidth
-            type='password'
-            {...formik.getFieldProps('password')}
-            error={Boolean(formik.touched.password && formik.errors.password)}
-            helperText={formik.touched.password && formik.errors.password}
-          />
-          <Button type='submit' variant='contained'>
-            Submit
-          </Button>
-        </>
-      )}
-    </ColumnBox>
+    <Box component='form' onSubmit={formik.handleSubmit}>
+      <ColumnBox height='100vh' width='50%' maxWidth='450px' margin='auto' gap={3}>
+        {success ? (
+          <>
+            <Typography variant='h4'>Password changed</Typography>
+            <Button onClick={() => navigate('/')}>Return Home to Login</Button>
+          </>
+        ) : (
+          <>
+            <TextField
+              label='New Password'
+              fullWidth
+              type='password'
+              {...formik.getFieldProps('password')}
+              error={Boolean(formik.touched.password && formik.errors.password)}
+              helperText={formik.touched.password && formik.errors.password}
+            />
+            <Button type='submit' variant='contained'>
+              Submit
+            </Button>
+          </>
+        )}
+      </ColumnBox>
+    </Box>
   );
 }

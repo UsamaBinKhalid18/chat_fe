@@ -7,9 +7,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 
 import { useLogout } from 'src/hooks/useLogout';
-import { COLORS } from 'src/theme/COLORS';
-
-
+import { COLORS } from 'src/theme/colors';
 
 interface UserMenuProps {
   handleClose: (e: MouseEvent | TouchEvent | React.MouseEvent) => void;

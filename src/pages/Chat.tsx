@@ -2,16 +2,19 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 
+import { FileOpenOutlined, FileUploadOutlined, InsertDriveFile } from '@mui/icons-material';
 import { Box, styled, Typography } from '@mui/material';
 
 import { aiModels } from 'src/common/constants';
+import { utils } from 'src/common/utils';
 import ColumnBox from 'src/components/common/ColumnBox';
-import Input from 'src/components/Input';
+import RowBox from 'src/components/common/RowBox';
+import Input, { FileUpload } from 'src/components/Input';
 import MarkdownRenderer from 'src/components/MarkdownRenderer';
 import ModelSelector from 'src/components/ModelSelector';
+import { API_BASE_URL } from 'src/config';
 import useStream from 'src/hooks/useStream';
 import { selectModel, setModel } from 'src/redux/reducers/chatCompletionSlice';
-
 
 const InputWrapper = styled(Box)(
   ({ theme }) => `
@@ -50,23 +53,28 @@ const ScrollableMessages = styled(Box)`
 
 export type Message = {
   text: string;
+  fileId?: string;
+  fileUrl?: string;
+  fileName?: string;
   isUser: boolean;
   model: string;
 };
 
 export default function Chat() {
   const location = useLocation();
-  const { message: initialMessage } = location.state || {};
+  const { message: initialMessage, fileId, fileUrl, fileName } = location.state || {};
   const model = useSelector(selectModel);
 
   const [messages, setMessages] = useState<Message[]>(
-    initialMessage ? [{ text: initialMessage, isUser: true, model }] : [],
+    initialMessage
+      ? [{ text: initialMessage, isUser: true, model, fileId, fileUrl, fileName }]
+      : [],
   );
   const { data, isLoading, startStreaming, stopStreaming } = useStream(
-    'http://localhost:8000/api/v1/chat-completion/',
+    `${API_BASE_URL}/api/v1/chat-completion/`,
   );
   useEffect(() => {
-    startStreaming([{ text: initialMessage, isUser: true, model }]);
+    startStreaming([{ text: initialMessage, isUser: true, model, fileId, fileUrl, fileName }]);
   }, []);
   const dispatch = useDispatch();
 
@@ -119,7 +127,7 @@ export default function Chat() {
               display='flex'
               alignItems='start'
               sx={{
-                backgroundColor: message.isUser ? '#333' : 'secondary',
+                // backgroundColor: message.isUser ? '#333' : 'secondary',
                 animation: 'fadeIn 0.5s ease-in-out',
                 '@keyframes fadeIn': {
                   '0%': {
@@ -148,16 +156,55 @@ export default function Chat() {
                   }}
                 />
               )}
-              <MarkdownRenderer content={message.text} />
+
+              <ColumnBox alignItems='start' gap={1}>
+                {message.fileName &&
+                  message.isUser &&
+                  // file extension if image
+                  (['png', 'jpg', 'jpeg'].includes(message.fileName.split('.').at(-1) ?? '') ? (
+                    <img
+                      src={message.fileUrl}
+                      height={100}
+                      width={100}
+                      style={{ borderRadius: '12px', alignSelf: 'end' }}
+                    />
+                  ) : (
+                    <RowBox
+                      sx={{
+                        backgroundColor: 'success.dark',
+                        color: 'white',
+                        fontSize: 12,
+                        paddingX: 1,
+                        paddingY: 1,
+                        borderRadius: '12px',
+                      }}
+                      gap={1}
+                    >
+                      <InsertDriveFile />
+                      {utils.truncateString(message.fileName)}
+                    </RowBox>
+                  ))}
+                <Box
+                  alignSelf={message.isUser ? 'end' : 'start'}
+                  padding={message.isUser ? '0 1rem' : 0}
+                  borderRadius={4}
+                  sx={{ backgroundColor: message.isUser ? '#333' : 'secondary' }}
+                >
+                  <MarkdownRenderer content={message.text} />
+                </Box>
+              </ColumnBox>
             </Box>
           ))}
         </ColumnBox>
       </ScrollableMessages>
       <InputWrapper alignSelf='center'>
         <Input
-          onSubmit={(message) => {
-            startStreaming([...messages, { text: message, isUser: true, model }]);
-            setMessages((messages) => [...messages, { text: message, isUser: true, model }]);
+          onSubmit={(message, fileId, fileUrl, fileName) => {
+            startStreaming([...messages, { text: message, fileId, isUser: true, model }]);
+            setMessages((messages) => [
+              ...messages,
+              { text: message, fileId, isUser: true, model, fileUrl, fileName },
+            ]);
           }}
           isChat={true}
           isStreaming={isLoading}

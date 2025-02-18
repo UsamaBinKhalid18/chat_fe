@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
+// @ts-expect-error unsupported types
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 
 import { Check } from '@mui/icons-material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { Box, IconButton, Typography } from '@mui/material';
 
-import * as CodeThemes from 'react-syntax-highlighter/dist/esm/styles/prism';
+// @ts-expect-error unsupported types
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 import RowBox from './common/RowBox';
 
@@ -79,7 +81,7 @@ const CodeBlock: React.FC<{ inline?: boolean; className?: string; children?: Rea
         )}
       </Box>
       <SyntaxHighlighter
-        style={CodeThemes.oneDark}
+        style={oneDark}
         language={language}
         PreTag='div'
         customStyle={{

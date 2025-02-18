@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { endpoints } from 'src/apis/endpoints';
-import { Message } from 'src/pages/chat';
+import { Message } from 'src/pages/Chat';
 import {
   selectAccessToken,
   selectCurrentUser,

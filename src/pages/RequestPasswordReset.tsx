@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Button, TextField, Typography } from '@mui/material';
+import { Box, Button, TextField, Typography } from '@mui/material';
 
 import { useFormik } from 'formik';
 import { useRequestPasswordResetMutation } from 'src/apis/authApi';
@@ -29,31 +29,25 @@ export default function RequestPasswordReset() {
     },
   });
   return (
-    <ColumnBox
-      height='100vh'
-      width='50%'
-      maxWidth='450px'
-      margin='auto'
-      component='form'
-      gap={3}
-      onSubmit={formik.handleSubmit}
-    >
-      {success ? (
-        <Typography variant='h4'>Password reset email sent</Typography>
-      ) : (
-        <>
-          <TextField
-            label='Email'
-            fullWidth
-            {...formik.getFieldProps('email')}
-            error={Boolean(formik.touched.email && formik.errors.email)}
-            helperText={formik.touched.email && formik.errors.email}
-          />
-          <Button type='submit' variant='contained'>
-            Submit
-          </Button>
-        </>
-      )}
-    </ColumnBox>
+    <Box component='form' onSubmit={formik.handleSubmit}>
+      <ColumnBox height='100vh' width='50%' maxWidth='450px' margin='auto' gap={3}>
+        {success ? (
+          <Typography variant='h4'>Password reset email sent</Typography>
+        ) : (
+          <>
+            <TextField
+              label='Email'
+              fullWidth
+              {...formik.getFieldProps('email')}
+              error={Boolean(formik.touched.email && formik.errors.email)}
+              helperText={formik.touched.email && formik.errors.email}
+            />
+            <Button type='submit' variant='contained'>
+              Submit
+            </Button>
+          </>
+        )}
+      </ColumnBox>
+    </Box>
   );
 }

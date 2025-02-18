@@ -2,7 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { Code, DocumentScanner, Edit, Psychology, QuestionMark } from '@mui/icons-material';
+import {
+  Analytics,
+  Article,
+  Code,
+  DocumentScanner,
+  Edit,
+  Psychology,
+  QuestionMark,
+  RemoveRedEye,
+} from '@mui/icons-material';
 import { Box, IconButton, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 
 import { useGetSubscriptionQuery } from 'src/apis/paymentsApi';
@@ -49,18 +58,18 @@ const autoFills: autoFillType[] = [
       'optimizing performance',
     ],
   },
-  // {
-  //   name: 'Analyze image',
-  //   icon: <RemoveRedEye />,
-  //   startingText: 'Analyze the image by',
-  //   options: [
-  //     'extracting tags',
-  //     'identifying objects',
-  //     'detecting faces',
-  //     'classifying scenes',
-  //     'recognizing text',
-  //   ],
-  // },
+  {
+    name: 'Analyze image',
+    icon: <RemoveRedEye />,
+    startingText: 'Analyze the image by',
+    options: [
+      'extracting tags',
+      'identifying objects',
+      'detecting faces',
+      'classifying scenes',
+      'recognizing text',
+    ],
+  },
   {
     name: 'Summarize',
     icon: <DocumentScanner />,
@@ -73,18 +82,18 @@ const autoFills: autoFillType[] = [
     startingText: 'Advise me on',
     options: ['a career', 'a relationship', 'a project', 'a decision', 'a problem'],
   },
-  // {
-  //   name: 'Process Docoument',
-  //   icon: <Article />,
-  //   startingText: 'Process the data of',
-  //   options: ['a report', 'an analysis', 'a presentation', 'a project', 'a task'],
-  // },
-  // {
-  //   name: 'Analyze data',
-  //   icon: <Analytics />,
-  //   startingText: 'Analyze the data of',
-  //   options: ['a report', 'an analysis', 'a presentation', 'a project', 'a task'],
-  // },
+  {
+    name: 'Process Document',
+    icon: <Article />,
+    startingText: 'Process the data of',
+    options: ['a report', 'an analysis', 'a presentation', 'a project', 'a task'],
+  },
+  {
+    name: 'Analyze data',
+    icon: <Analytics />,
+    startingText: 'Analyze the data of',
+    options: ['a report', 'an analysis', 'a presentation', 'a project', 'a task'],
+  },
   {
     name: 'Brainstorm',
     icon: <Psychology />,
@@ -117,9 +126,15 @@ export function Home() {
       refetch();
     }
   }, [user, refetch]);
-  const handleInputSubmit = (message: string) => {
+  const handleInputSubmit = (
+    message: string,
+    fileId?: string,
+    fileUrl?: string,
+    fileName?: string,
+  ) => {
     if (!user) return dispatch(setLoginModal(true));
-    if (data?.is_active) return navigate('/chat', { state: { message } });
+    if (data?.is_active)
+      return navigate('/chat', { state: { message, fileId, fileUrl, fileName } });
     navigate('/pricing');
     dispatch(
       addNotification({ message: 'Please subscribe to continue', type: 'info', id: Date.now() }),
