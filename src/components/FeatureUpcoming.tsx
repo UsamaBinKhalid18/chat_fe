@@ -34,8 +34,8 @@ export function FeatureUpcoming({ open, featureName, onClose }: FeatureUpcomingP
           </Typography>
           <Typography color='grey' textAlign='center'>
             Our team is working to bring you this feature.Let us know your expectations <br />
-            <Link underline='hover' color='lightgrey' href='mailto:wish@chatapp.com'>
-              wish@chatapp.com
+            <Link underline='hover' color='lightgrey' href='mailto:wish@chatifyai.app'>
+              wish@chatifyai.app
             </Link>
           </Typography>
         </ColumnBox>

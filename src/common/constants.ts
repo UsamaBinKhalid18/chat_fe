@@ -23,8 +23,8 @@ export type AIModelType = {
 };
 
 export const aiModels: AIModelType[] = [
+  { name: 'Google Gemini 1.5', iconUrl: IMAGES.gemini },
   { name: 'OpenAI GPT 4o Mini', iconUrl: IMAGES.gpt },
   { name: 'OpenAI GPT 4o', iconUrl: IMAGES.gpt },
-  { name: 'Google Gemini 1.5', iconUrl: IMAGES.gemini },
   { name: 'Anthropic Claude', iconUrl: IMAGES.claude },
 ];

@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-import { FileOpenOutlined, FileUploadOutlined, InsertDriveFile } from '@mui/icons-material';
-import { Box, styled, Typography } from '@mui/material';
+import { InsertDriveFile } from '@mui/icons-material';
+import { Box, CircularProgress, styled, Typography } from '@mui/material';
 
 import { aiModels } from 'src/common/constants';
 import { utils } from 'src/common/utils';
 import ColumnBox from 'src/components/common/ColumnBox';
 import RowBox from 'src/components/common/RowBox';
-import Input, { FileUpload } from 'src/components/Input';
+import Input from 'src/components/Input';
 import MarkdownRenderer from 'src/components/MarkdownRenderer';
 import ModelSelector from 'src/components/ModelSelector';
 import { API_BASE_URL } from 'src/config';
@@ -33,16 +33,10 @@ const InputWrapper = styled(Box)(
 const Container = styled(Box)`
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: calc(100vh - 64px);
   width: 100%;
 `;
 
-const StickyTop = styled(Box)`
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  padding: 8px;
-`;
 const ScrollableMessages = styled(Box)`
   display: flex;
   flex-direction: column;
@@ -64,6 +58,7 @@ export default function Chat() {
   const location = useLocation();
   const { message: initialMessage, fileId, fileUrl, fileName } = location.state || {};
   const model = useSelector(selectModel);
+  const navigate = useNavigate();
 
   const [messages, setMessages] = useState<Message[]>(
     initialMessage
@@ -79,6 +74,9 @@ export default function Chat() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    if (!initialMessage) {
+      navigate('/');
+    }
     return () => stopStreaming();
   }, []);
 
@@ -108,13 +106,6 @@ export default function Chat() {
 
   return (
     <Container>
-      <StickyTop paddingLeft={10} marginLeft={6} marginTop={0.5}>
-        <ModelSelector
-          onChange={(model) => dispatch(setModel(model))}
-          activeModel={model}
-          models={aiModels}
-        />
-      </StickyTop>
       <ScrollableMessages width='100%' alignSelf='center'>
         <ColumnBox width='90%' maxWidth={700} gap={1} alignSelf='center'>
           {messages.map((message, index) => (
@@ -191,6 +182,9 @@ export default function Chat() {
                   sx={{ backgroundColor: message.isUser ? '#333' : 'secondary' }}
                 >
                   <MarkdownRenderer content={message.text} />
+                  {isLoading && !message.isUser && index == messages.length - 1 && (
+                    <CircularProgress size={20} />
+                  )}
                 </Box>
               </ColumnBox>
             </Box>
@@ -211,7 +205,7 @@ export default function Chat() {
           handleStopStreaming={stopStreaming}
         />
         <Typography textAlign='center' fontSize={14} pt={1} color='secondary' alignSelf='center'>
-          Chatapp can make mistakes. Check important info.
+          Chatify can make mistakes. Check important info.
         </Typography>
       </InputWrapper>
     </Container>

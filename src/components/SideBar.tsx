@@ -1,19 +1,14 @@
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import {
   Add,
   KeyboardTab as Collapse,
   CreditCard,
-  Start as Expand,
   Extension,
   Help,
-  Image,
   KeyboardArrowDown,
-  Message,
-  MusicNote,
-  TravelExplore,
 } from '@mui/icons-material';
 import {
   Avatar,
@@ -28,21 +23,26 @@ import {
 } from '@mui/material';
 import MuiDrawer from '@mui/material/Drawer';
 
-import { GPT } from 'src/assets/images/svgs';
-import usePersistedState from 'src/hooks/usePersistedState';
+import {
+  ChatSVG,
+  GPT,
+  ImageSVG,
+  PricingSVG,
+  SearchSVG,
+  SupportSVG,
+  TeamsSVG,
+} from 'src/assets/images/svgs';
 import useResponsive from 'src/hooks/useResponsive';
 import { selectCurrentUser } from 'src/redux/reducers/authSlice';
-import { selectLoginModal, setLoginModal } from 'src/redux/reducers/notificationSlice';
 import { COLORS } from 'src/theme/colors';
 
-import AuthenticationModal from './Authentication/AuthenticationModal';
 import ColumnBox from './common/ColumnBox';
 import RowBox from './common/RowBox';
 import { FeatureUpcoming } from './FeatureUpcoming';
 import { SideBarItem } from './SideBarItem';
 import { UserMenu } from './UserMenu';
 
-const drawerWidth = 240;
+const drawerWidth = 232;
 const commonStyles = (): CSSObject => ({
   overflowX: 'hidden',
   backgroundImage: `linear-gradient(to right, ${COLORS.gradient.start}, ${COLORS.gradient.end})`,
@@ -75,14 +75,15 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'center',
   gap: 8,
-  padding: theme.spacing(0, 1),
+  padding: '0 12px',
   ...theme.mixins.toolbar,
 }));
 
-const StyledIconButton = styled(IconButton)`
+export const StyledIconButton = styled(IconButton)`
   &:hover {
     background: ${COLORS.button.dark.hover};
   }
+  border-radius: 8px;
 `;
 
 const FooterIconButton = styled(StyledIconButton, {
@@ -102,7 +103,9 @@ const Drawer = styled(MuiDrawer)(({ theme, open }) => ({
   padding: 0,
   flexShrink: 0,
   whiteSpace: 'nowrap',
+
   boxSizing: 'border-box',
+
   ...(open && {
     ...openedMixin(theme),
     '& .MuiDrawer-paper': openedMixin(theme),
@@ -129,7 +132,7 @@ const StyledAvatar = styled(Avatar)`
 
 const UserContainer = styled(RowBox)`
   padding: 12px;
-  border: 1px solid ${COLORS.button.dark.hover};
+  border: 1px solid #666;
   border-radius: 12px;
   cursor: pointer;
   user-select: none;
@@ -142,17 +145,22 @@ const UserContainer = styled(RowBox)`
 const StartNewButton = styled(Button)`
   color: white;
   width: 100%;
-  border-color: ${COLORS.sideBarIcon};
   border-radius: 12px;
   text-transform: none;
   font-size: 16px;
+  display: flex;
+  gap: 6px;
+  padding: 8px 22px;
+  min-height: 40px;
+  margin-bottom: 6px;
 `;
 
 const MenuSubtitle = styled(Typography)`
   color: white;
-  margin-top: 30px;
-  margin-bottom: 2px;
-  font-size: 12px;
+  margin-top: 24px;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 600;
   padding-left: 8px;
 `;
 
@@ -167,30 +175,28 @@ type MenuItemType = {
   collapsedTitle?: string;
   navigationUrl?: string;
   onClick?: () => void;
+  isActive?: () => boolean;
 };
 const menuItems: MenuType[] = [
   {
     title: 'Tools',
     items: [
       {
-        icon: <Message htmlColor='white' />,
+        icon: <ChatSVG color='#b2b2b2' />,
         title: 'AI Chat',
+        navigationUrl: '/',
+        isActive: () => window.location.pathname === '/' || window.location.pathname === '/chat',
         collapsedTitle: 'Chat',
       },
       {
-        icon: <TravelExplore htmlColor='white' />,
-        title: 'AI Search Engine',
-        collapsedTitle: 'Search',
-      },
-      {
-        icon: <Image htmlColor='white' />,
+        icon: <ImageSVG color='#b2b2b2' />,
         title: 'Image Generation',
         collapsedTitle: 'Image',
       },
       {
-        icon: <MusicNote htmlColor='white' />,
-        title: 'Music Generation',
-        collapsedTitle: 'Music',
+        icon: <SearchSVG color='#b2b2b2' />,
+        title: 'AI Search Engine',
+        collapsedTitle: 'Search',
       },
     ],
   },
@@ -198,17 +204,17 @@ const menuItems: MenuType[] = [
     title: 'Others',
     items: [
       {
-        icon: <Extension htmlColor='white' />,
-        title: 'Extension',
-        collapsedTitle: 'Extension',
+        icon: <TeamsSVG color='#b2b2b2' />,
+        title: 'Invite Team',
+        collapsedTitle: 'Teams',
       },
       {
-        icon: <Help htmlColor='white' />,
+        icon: <SupportSVG color='#b2b2b2' />,
         title: 'Support',
         navigationUrl: '/support',
       },
       {
-        icon: <CreditCard htmlColor='white' />,
+        icon: <PricingSVG color='#b2b2b2' />,
         title: 'Pricing Plans',
         collapsedTitle: 'Pricing',
         navigationUrl: '/pricing',
@@ -217,16 +223,19 @@ const menuItems: MenuType[] = [
   },
 ];
 
-export default function SideBar() {
+export default function SideBar({
+  open,
+  setOpen,
+}: {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+}) {
   const { isSmallerScreen } = useResponsive();
-  const [open, setOpen] = usePersistedState('sideMenuOpen', !isSmallerScreen);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const isFooterMenuOpen = Boolean(anchorEl);
   const [selectedFeature, setSelectedFeature] = useState('');
   const [isFeatureUpcomingOpen, setIsFeatureUpcomingOpen] = useState(false);
-  const authModalOpen = useSelector(selectLoginModal);
   const user = useSelector(selectCurrentUser);
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -252,47 +261,56 @@ export default function SideBar() {
         ModalProps={{
           keepMounted: true, // Improves performance on mobile
         }}
-        sx={{ height: '100vh' }}
+        sx={{
+          height: '100vh',
+          '& .MuiDrawer-paper': { borderWidth: 0 },
+        }}
       >
         <DrawerHeader>
-          <GPT color='white' style={{ minWidth: 36, minHeight: 36 }} />
+          <GPT color='white' style={{ maxWidth: 28, maxHeight: 28 }} />
           {open && (
             <>
-              <Typography variant='h6' color='white'>
-                ChatApp
+              <Typography fontSize={16} fontWeight={500} color='white'>
+                Chatify
               </Typography>
 
               <StyledIconButton onClick={() => setOpen(false)} sx={{ marginLeft: 'auto' }}>
-                <Collapse htmlColor='white' sx={{ rotate: '180deg' }} />
+                <Collapse htmlColor='#dadada' sx={{ rotate: '180deg' }} />
               </StyledIconButton>
             </>
           )}
         </DrawerHeader>
-        <Box margin={open ? '20px' : '8px'}>
+        <Box margin={open ? '12px' : '8px'} mt={1}>
           <StartNewButton
             variant='outlined'
             sx={{
               border: open ? 'default' : 'none',
-              display: 'flex',
               flexDirection: open ? 'row' : 'column',
+              '&:hover': {
+                backgroundColor: COLORS.button.dark.hover,
+              },
             }}
             onClick={() => {
               navigate('/');
               if (isSmallerScreen) setOpen(false);
             }}
           >
-            <Add htmlColor={COLORS.sideBarIcon} />
-            <Typography>{open ? 'Start New' : 'New'}</Typography>
+            <Add htmlColor={COLORS.sideBarIcon} sx={{ height: 20, width: 20 }} />
+            <Typography fontWeight={500} fontSize={open ? 14 : 12}>
+              {open ? 'Start New' : 'New'}
+            </Typography>
           </StartNewButton>
           <ColumnBox alignItems={open ? 'start' : 'center'} gap='4px'>
             {menuItems.map((menu) => (
               <>
                 {open ? (
-                  <MenuSubtitle key={menu.title}>{menu.title}</MenuSubtitle>
+                  <MenuSubtitle fontWeight={500} key={menu.title}>
+                    {menu.title}
+                  </MenuSubtitle>
                 ) : (
                   <Divider
                     key={menu.title}
-                    sx={{ width: '40px', margin: '14px', borderColor: 'white' }}
+                    sx={{ width: '58px', margin: '4px', borderColor: 'white' }}
                   />
                 )}
                 {menu.items.map((item) => (
@@ -314,6 +332,13 @@ export default function SideBar() {
                           })
                     }
                     collapsed={!open}
+                    isActive={
+                      item.isActive
+                        ? item.isActive()
+                        : item.navigationUrl
+                        ? window.location.pathname === item.navigationUrl
+                        : false
+                    }
                   />
                 ))}
               </>
@@ -321,7 +346,7 @@ export default function SideBar() {
           </ColumnBox>
         </Box>
         <DrawerFooter>
-          {user ? (
+          {user && (
             <>
               <UserMenu handleClose={handleClose} anchorEl={anchorEl} />
               <UserContainer onClick={handleClick}>
@@ -342,36 +367,10 @@ export default function SideBar() {
                 )}
               </UserContainer>
             </>
-          ) : (
-            <>
-              <Button
-                variant='contained'
-                fullWidth
-                sx={{ backgroundColor: '#2727e3', color: 'white', margin: open ? '16px' : '8px' }}
-                onClick={() => dispatch(setLoginModal(true))}
-              >
-                <Typography>Log In</Typography>
-              </Button>
-              <AuthenticationModal
-                open={authModalOpen}
-                handleClose={() => dispatch(setLoginModal(false))}
-              />
-            </>
           )}
         </DrawerFooter>
       </Drawer>
-      {!open && (
-        <StyledIconButton
-          onClick={() => setOpen(true)}
-          sx={{
-            position: 'absolute',
-            left: isSmallerScreen ? '10px' : '86px',
-            top: '10px',
-          }}
-        >
-          <Expand htmlColor='white' />
-        </StyledIconButton>
-      )}
+
       <FeatureUpcoming
         open={isFeatureUpcomingOpen}
         featureName={selectedFeature}

@@ -10,6 +10,7 @@ interface SideBarItemProps {
   collapsedTitle?: string;
   collapsed: boolean;
   onClick: () => void;
+  isActive?: boolean;
 }
 
 const StyledListItemButton = styled(ListItemButton, {
@@ -17,8 +18,9 @@ const StyledListItemButton = styled(ListItemButton, {
 })<{ collapsed: boolean }>`
   flex-direction: ${({ collapsed }) => (collapsed ? 'column' : 'row')};
   gap: ${({ collapsed }) => (collapsed ? '0px' : '12px')};
-  padding: ${({ collapsed }) => (collapsed ? '8px 10px' : '4px 10px')};
+  padding: ${({ collapsed }) => (collapsed ? '8px 12px' : '4px 12px')};
   width: 100%;
+  height: ${({ collapsed }) => (collapsed ? '60px' : '44px')};
   color: white;
   border-radius: 8px;
   &:hover {
@@ -26,10 +28,21 @@ const StyledListItemButton = styled(ListItemButton, {
   }
 `;
 
-export function SideBarItem({ icon, title, collapsedTitle, onClick, collapsed }: SideBarItemProps) {
+export function SideBarItem({
+  icon,
+  title,
+  collapsedTitle,
+  onClick,
+  collapsed,
+  isActive,
+}: SideBarItemProps) {
   return (
-    <StyledListItemButton onClick={onClick} collapsed={collapsed}>
-      <ListItemIcon sx={{ minWidth: '18px' }}>
+    <StyledListItemButton
+      onClick={isActive ? () => {} : onClick}
+      collapsed={collapsed}
+      selected={isActive}
+    >
+      <ListItemIcon sx={{ minWidth: '18px', padding: collapsed ? '4px' : '0px' }}>
         {React.cloneElement(icon as React.ReactElement, {
           htmlColor: COLORS.sideBarIcon,
           sx: { width: '18px', height: '18px' },
@@ -37,8 +50,7 @@ export function SideBarItem({ icon, title, collapsedTitle, onClick, collapsed }:
       </ListItemIcon>
       <ListItemText
         primary={collapsed ? collapsedTitle || title : title}
-        sx={{ marginBottom: 0 }}
-        slotProps={{ primary: { variant: 'caption' } }}
+        slotProps={{ primary: { fontSize: collapsed ? '12px' : '14px', fontWeight: 500 } }}
       />
     </StyledListItemButton>
   );

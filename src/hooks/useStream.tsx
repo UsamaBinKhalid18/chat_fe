@@ -3,8 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { endpoints } from 'src/apis/endpoints';
+import { API_BASE_URL } from 'src/config';
 import { Message } from 'src/pages/Chat';
 import {
+  logOut,
   selectAccessToken,
   selectCurrentUser,
   selectRefreshToken,
@@ -43,13 +45,17 @@ const useStream = (url: string) => {
 
       if (response.status === 401 && refreshToken) {
         // Refresh access token if unauthorized
-        const refreshResponse = await fetch(endpoints.REFRESH_TOKEN(user?.id ?? 0), {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ refresh: refreshToken }),
-        });
+        const refreshResponse = await fetch(
+          `${API_BASE_URL}/${endpoints.REFRESH_TOKEN(user?.id ?? 0)}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ refresh: refreshToken }),
+          },
+        );
 
         if (refreshResponse.status === 200) {
+          console.log('here');
           const { access } = await refreshResponse.json();
           dispatch(updateAccessToken({ access, refresh: refreshToken }));
           return startStreaming(messages);
@@ -63,7 +69,7 @@ const useStream = (url: string) => {
             }),
           );
           dispatch(setLoginModal(true));
-          navigate('/home');
+          navigate('/');
           return;
         }
       }
@@ -118,6 +124,3 @@ const useStream = (url: string) => {
 };
 
 export default useStream;
-function logOut(): any {
-  throw new Error('Function not implemented.');
-}

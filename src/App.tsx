@@ -19,7 +19,7 @@ function App() {
           <Route path='/chat' element={<Chat />} />
           <Route path='/support' element={<Support />} />
           <Route path='/pricing' element={<PricingPlans />} />
-          <Route path='*' element={<>404</>} />
+          <Route path='*' element={<Home />} />
         </Route>
         <Route path='/activate/:uid/:token' element={<ActivateAccount />} />
         <Route path='/password-reset' element={<RequestPasswordReset />} />

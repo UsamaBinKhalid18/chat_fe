@@ -1,3 +1,4 @@
+import { ArrowRight, EmailOutlined } from '@mui/icons-material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   Accordion,
@@ -9,11 +10,12 @@ import {
 } from '@mui/material';
 
 import ColumnBox from 'src/components/common/ColumnBox';
+import RowBox from 'src/components/common/RowBox';
 
 const faqData = [
   {
-    question: 'What can I use chatapp for?',
-    text: 'Powered by state-of-the-art AI from OpenAI, Anthropic, and Google, chatapp saves you time and effort, making your tasks easier and more efficient.',
+    question: 'What can I use chatify for?',
+    text: 'Powered by state-of-the-art AI from OpenAI, Anthropic, and Google, chatify saves you time and effort, making your tasks easier and more efficient.',
     listItems: [
       'Create professional emails, blog posts, or social media captions effortlessly with its writing assistance capabilities.',
       'Design unique visuals or enhance existing images for presentations, posts, and creative projects with its image generation tool.',
@@ -23,12 +25,12 @@ const faqData = [
     ],
   },
   {
-    question: 'What platforms is chatapp available on?',
-    text: 'chatapp is available on various platforms including web, iOS, and Android.',
+    question: 'What platforms is chatify available on?',
+    text: 'chatify is available on various platforms including web, iOS, and Android.',
   },
   {
     question: 'What subscription plans are available?',
-    text: 'chatapp offers several subscription plans including Free, Pro, and Enterprise.',
+    text: 'chatify offers several subscription plans including Free, Pro, and Enterprise.',
   },
   {
     question: 'Can I switch between AI models?',
@@ -36,15 +38,15 @@ const faqData = [
   },
   {
     question: 'What file types are supported for upload?',
-    text: 'chatapp supports various file types including PDF, DOCX, and TXT.',
+    text: 'chatify supports various file types including PDF, DOCX, and TXT.',
   },
   {
-    question: 'Is my personal data safe and secure when using chatapp?',
-    text: 'Yes, chatapp ensures that your personal data is safe and secure with advanced encryption and privacy measures.',
+    question: 'Is my personal data safe and secure when using chatify?',
+    text: 'Yes, chatify ensures that your personal data is safe and secure with advanced encryption and privacy measures.',
   },
   {
     question: 'Can I share my account with others?',
-    text: "No, sharing your account with others is not allowed as per chatapp's terms of service.",
+    text: "No, sharing your account with others is not allowed as per chatify's terms of service.",
   },
   {
     question: 'How do I reset my password?',
@@ -52,11 +54,11 @@ const faqData = [
   },
   {
     question: 'Who do I contact if I have questions or need support?',
-    text: 'You can contact chatapp support through the help center or by emailing support@chatapp.com.',
+    text: 'You can contact chatify support through the help center or by emailing support@chatifyai.app.',
   },
   {
     question: 'How can I report a bug to the developer?',
-    text: 'You can report bugs by submitting a ticket through the chatapp help center.',
+    text: 'You can report bugs by submitting a ticket through the chatify help center.',
   },
   {
     question: 'How can I cancel my subscription?',
@@ -66,10 +68,37 @@ const faqData = [
 
 export default function Support() {
   return (
-    <ColumnBox>
-      <Typography my={10} variant='h5' width='90%' textAlign='center'>
-        Reach out to us: <Link href='mailto:support@chatapp.com'>support@chatapp.com</Link>
+    <ColumnBox gap={2}>
+      <Typography mt={10} variant='h3' width='90%' textAlign='center'>
+        Talk with our team
       </Typography>
+      <RowBox
+        component='a'
+        href='mailto:support@chatifyai.app'
+        color='#ddd'
+        sx={{
+          backgroundColor: 'background.paper',
+          padding: 2,
+          borderRadius: 4,
+          cursor: 'pointer',
+          textDecoration: 'none',
+          gap: 2,
+          minWidth: 400,
+          alignItems: 'center',
+          mb: 6,
+        }}
+      >
+        <ColumnBox sx={{ backgroundColor: '#666', padding: 1, borderRadius: 8 }}>
+          <EmailOutlined sx={{ margin: 'auto' }} />
+        </ColumnBox>
+        <ColumnBox alignItems='start'>
+          <Typography fontSize={20} fontWeight={600}>
+            Email Us
+          </Typography>
+          <Typography variant='caption'>We aim to respond within a day</Typography>
+        </ColumnBox>
+        <ArrowRight sx={{ marginLeft: 'auto' }} />
+      </RowBox>
       <Box
         width='90%'
         maxWidth='800px'
@@ -87,7 +116,12 @@ export default function Support() {
           },
         }}
       >
-        <Typography variant='h4'>Frequently Asked Questions</Typography>
+        <Typography variant='h4' textAlign='center'>
+          Frequently Asked Questions
+        </Typography>
+        <Typography variant='caption' fontSize={14} mb={2} textAlign='center'>
+          Discover more information by exploring our FAQ section
+        </Typography>
         {faqData.map((faq, index) => (
           <Accordion key={index} defaultExpanded={index === 0}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>

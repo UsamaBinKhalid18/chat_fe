@@ -12,6 +12,7 @@ import {
 import { utils } from 'src/common/utils';
 import ColumnBox from 'src/components/common/ColumnBox';
 import RowBox from 'src/components/common/RowBox';
+import useResponsive from 'src/hooks/useResponsive';
 import { selectCurrentUser } from 'src/redux/reducers/authSlice';
 import { addNotification, setLoginModal } from 'src/redux/reducers/notificationSlice';
 
@@ -77,6 +78,7 @@ export default function PricingPlans() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const theme = useTheme();
+  const { isSmallerScreen, isMobile } = useResponsive();
 
   if (searchParams.has('success')) {
     dispatch(
@@ -131,17 +133,24 @@ export default function PricingPlans() {
   }, [user, dispatch]);
 
   return (
-    <ColumnBox gap={4} mt={5} width='90%' maxWidth={800}>
+    <ColumnBox minHeight='100%' gap={4} mt={5} pb={2} width='90%' margin='auto'>
       <Box>
         <Typography textAlign='center' variant='h3'>
           Pricing Plans
         </Typography>
         <Typography color='textSecondary'>
-          Want to get more out of chat app? Subscribe to one of our plans
+          Want to get more out of chatify? Subscribe to one of our plans
         </Typography>
       </Box>
       {data?.is_active && (
-        <ColumnBox p={2} borderRadius='8px' bgcolor='background.paper' alignItems='start'>
+        <ColumnBox
+          p={2}
+          borderRadius='8px'
+          alignItems='start'
+          maxWidth={isMobile ? 300 : 800}
+          width={isSmallerScreen ? '90%' : '80%'}
+          sx={{ backgroundColor: theme.palette.background.paper }}
+        >
           <Typography>Current Plan</Typography>
           <RowBox width='100%' justifyContent='start' gap={2} flexWrap='wrap'>
             <ColumnBox alignItems='start'>
@@ -157,7 +166,7 @@ export default function PricingPlans() {
               color='error'
               variant='outlined'
               onClick={() => unsubscribe()}
-              sx={{ marginLeft: 'auto' }}
+              sx={{ marginLeft: 'auto', width: isMobile ? '100%' : 'fit-content' }}
             >
               CancelSubsciption
             </Button>
@@ -179,7 +188,7 @@ export default function PricingPlans() {
             gap={2}
             borderRadius='8px'
             justifyContent='start'
-            bgcolor='background.paper'
+            sx={{ bgcolor: 'background.paper' }}
             maxWidth={300}
             alignItems='start'
             position='relative'

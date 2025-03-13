@@ -14,7 +14,7 @@ const darkTheme = createTheme({
       paper: '#313131', // Slightly lighter for surfaces
     },
     action: {
-      hover: '#444', // Darker hover color
+      hover: '#171717', // Darker hover color
     },
     text: {
       primary: '#ffffff', // White text
@@ -22,7 +22,7 @@ const darkTheme = createTheme({
     },
   },
   typography: {
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    fontFamily: '"DM sans", "Helvetica", "Arial", sans-serif',
     fontSize: 14,
     button: {
       textTransform: 'none', // Avoid uppercase for buttons by default
@@ -33,6 +33,19 @@ const darkTheme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 8, // Rounded buttons
+          borderColor: '#616161',
+        },
+      },
+    },
+    MuiListItemButton: {
+      styleOverrides: {
+        root: {
+          '&.Mui-selected': {
+            backgroundColor: '#111111',
+            '&:hover': {
+              backgroundColor: '#111111',
+            },
+          },
         },
       },
     },

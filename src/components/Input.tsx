@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { ArrowUpward, Attachment, Close, Send, Stop } from '@mui/icons-material';
@@ -101,14 +101,20 @@ export default function Input({
     },
   });
 
+  const inputRef = useRef<HTMLInputElement>();
+
   const [upload] = useUploadMutation();
   const dispatch = useDispatch();
   const [uploading, setUploading] = useState(false);
   const [file, setFile] = useState<FileUpload | null>(null);
   const [deleteFile] = useDeleteFileMutation();
   useEffect(() => {
-    if (text) formik.setFieldValue('message', text);
-  }, [text, formik]);
+    if (text) {
+      formik.setFieldValue('message', text + ' ');
+      // focus on the input field
+      inputRef.current?.focus();
+    }
+  }, [text]);
 
   const handleFileChange = async (event: any) => {
     const newFile = event.currentTarget.files[0];
@@ -172,8 +178,11 @@ export default function Input({
           <Attachment />
         </IconButton>
         <TextField
+          inputRef={inputRef}
           variant='outlined'
           autoComplete='off'
+          autoFocus
+          placeholder={isChat ? '' : 'Type your message ...'}
           fullWidth
           {...formik.getFieldProps('message')}
           slotProps={{
@@ -195,20 +204,16 @@ export default function Input({
           sx={{
             width: 32,
             height: 32,
-            backgroundColor: isChat ? 'white !important' : 'inherit',
+            backgroundColor: 'white !important',
             '&:disabled': {
-              backgroundColor: isChat ? 'gray !important' : 'inherit',
+              backgroundColor: 'gray !important',
             },
           }}
         >
-          {isChat ? (
-            isStreaming ? (
-              <Stop htmlColor='#111' sx={{ width: 20, height: 20 }} />
-            ) : (
-              <ArrowUpward htmlColor='#111' sx={{ width: 20, height: 20 }} />
-            )
+          {isStreaming ? (
+            <Stop htmlColor='#111' sx={{ width: 20, height: 20 }} />
           ) : (
-            <Send />
+            <ArrowUpward htmlColor='#111' sx={{ width: 20, height: 20 }} />
           )}
         </IconButton>
       </RowBox>

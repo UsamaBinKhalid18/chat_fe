@@ -7,7 +7,7 @@ export const COLORS = {
   button: {
     dark: {
       background: '#2f2f2f',
-      hover: '#424242',
+      hover: '#171717',
     },
   },
   sideBarIcon: '#999',
