@@ -11,7 +11,7 @@ import { COLORS } from 'src/theme/colors';
 import Login from './Login';
 import Signup from './Signup';
 import RowBox from '../common/RowBox';
-
+import LoaderWithBackdrop from '../LoaderWithBackdrop';
 
 interface AuthenticationModalProps {
   open: boolean;
@@ -35,15 +35,18 @@ export default function AuthenticationModal({ open, handleClose }: Authenticatio
   const [backendError, setBackendError] = useState<string>('');
   const [isSignup, setIsSignup] = useState(false);
   const [googleLogin] = useGoogleLoginMutation();
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const handleGoogleLogin = async (credentialResponse: CredentialResponse) => {
     setBackendError('');
     try {
+      setIsLoading(true);
       await googleLogin({ accessToken: credentialResponse!.credential }).unwrap();
       handleClose();
     } catch (error: any) {
       setBackendError(utils.getErrorString(error));
     } finally {
+      setIsLoading(false);
     }
   };
 
@@ -57,6 +60,7 @@ export default function AuthenticationModal({ open, handleClose }: Authenticatio
   return (
     <Modal open={open} onClose={handleClose}>
       <Box sx={style}>
+        <LoaderWithBackdrop isLoading={isLoading} />
         {isSignup ? <Signup handleClose={handleClose} /> : <Login handleClose={handleClose} />}
         <RowBox justifyContent='space-between'>
           <Button

@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
@@ -7,7 +6,6 @@ import { Box, Button, styled, Typography, useTheme } from '@mui/material';
 import {
   useCancelSubscriptionMutation,
   useCreateStripeSessionMutation,
-  useGetSubscriptionQuery,
 } from 'src/apis/paymentsApi';
 import { utils } from 'src/common/utils';
 import ColumnBox from 'src/components/common/ColumnBox';
@@ -15,6 +13,7 @@ import RowBox from 'src/components/common/RowBox';
 import useResponsive from 'src/hooks/useResponsive';
 import { selectCurrentUser } from 'src/redux/reducers/authSlice';
 import { addNotification, setLoginModal } from 'src/redux/reducers/notificationSlice';
+import { selectSubscription } from 'src/redux/reducers/subscriptionSlice';
 
 interface StatusProps {
   active: boolean;
@@ -70,7 +69,7 @@ const subscriptionPlans: SubscriptionPlan[] = [
 ];
 
 export default function PricingPlans() {
-  const { data, refetch } = useGetSubscriptionQuery();
+  const subscription = useSelector(selectSubscription);
   const user = useSelector(selectCurrentUser);
   const dispatch = useDispatch();
   const [createStripeSession] = useCreateStripeSessionMutation();
@@ -116,8 +115,7 @@ export default function PricingPlans() {
 
   const unsubscribe = async () => {
     try {
-      await cancelSubsciption({ id: data?.package.id ?? 0 }).unwrap();
-      refetch();
+      await cancelSubsciption({ id: subscription.package.id ?? 0 }).unwrap();
     } catch (e: any) {
       console.error(e);
       dispatch(
@@ -126,23 +124,17 @@ export default function PricingPlans() {
     }
   };
 
-  useEffect(() => {
-    if (user) {
-      refetch();
-    }
-  }, [user, dispatch]);
-
   return (
     <ColumnBox minHeight='100%' gap={4} mt={5} pb={2} width='90%' margin='auto'>
       <Box>
         <Typography textAlign='center' variant='h3'>
           Pricing Plans
         </Typography>
-        <Typography color='textSecondary'>
+        <Typography color='textSecondary' textAlign='center'>
           Want to get more out of chatify? Subscribe to one of our plans
         </Typography>
       </Box>
-      {data?.is_active && (
+      {subscription.is_active && (
         <ColumnBox
           p={2}
           borderRadius='8px'
@@ -155,11 +147,13 @@ export default function PricingPlans() {
           <RowBox width='100%' justifyContent='start' gap={2} flexWrap='wrap'>
             <ColumnBox alignItems='start'>
               <RowBox>
-                <Typography variant='h4'>{data.package.name} </Typography>
-                <Status active={data.is_active}>{data.is_active ? 'Active' : 'Inactive'}</Status>
+                <Typography variant='h4'>{subscription.package.name} </Typography>
+                <Status active={subscription.is_active}>
+                  {subscription.is_active ? 'Active' : 'Inactive'}
+                </Status>
               </RowBox>
               <Typography color='textSecondary'>
-                Renews on {utils.getDateString(data.current_period_end)}
+                Renews on {utils.getDateString(subscription.current_period_end)}
               </Typography>
             </ColumnBox>
             <Button
@@ -168,7 +162,7 @@ export default function PricingPlans() {
               onClick={() => unsubscribe()}
               sx={{ marginLeft: 'auto', width: isMobile ? '100%' : 'fit-content' }}
             >
-              CancelSubsciption
+              Cancel Subsciption
             </Button>
           </RowBox>
         </ColumnBox>
@@ -188,11 +182,14 @@ export default function PricingPlans() {
             gap={2}
             borderRadius='8px'
             justifyContent='start'
-            sx={{ bgcolor: 'background.paper' }}
+            sx={{
+              bgcolor:
+                plan.id == 2 && subscription.package.id != 2 ? '#002348' : 'background.paper',
+            }}
             maxWidth={300}
             alignItems='start'
             position='relative'
-            border={plan.id == 2 ? `2px solid ${theme.palette.success.dark}` : 'none'}
+            border={plan.id == 2 ? `2px solid #007bff` : 'none'}
           >
             {plan.id == 2 && (
               <Typography
@@ -202,7 +199,7 @@ export default function PricingPlans() {
                   top: '-15px',
                   left: '50%',
                   transform: 'translateX(-50%)',
-                  bgcolor: theme.palette.success.dark,
+                  bgcolor: '#007bff',
                   px: 2.5,
                   py: '1px',
                   borderRadius: '20px',
@@ -226,7 +223,9 @@ export default function PricingPlans() {
               )}
             </RowBox>
             <RowBox gap={2}>
-              <Typography variant='h4'>${plan.price}</Typography>
+              <Typography variant='h4' fontWeight={700}>
+                ${plan.price}
+              </Typography>
               {plan.discount > 0 && (
                 <Typography variant='h5' color='secondary' sx={{ textDecoration: 'line-through' }}>
                   ${plan.previousPrice}
@@ -237,7 +236,7 @@ export default function PricingPlans() {
             <Button
               variant='outlined'
               color='inherit'
-              disabled={data?.package?.id === plan.id}
+              disabled={subscription.package?.id === plan.id}
               fullWidth
               onClick={() => {
                 if (!user) {
@@ -248,9 +247,9 @@ export default function PricingPlans() {
               }}
               sx={{ fontWeight: 700, fontSize: '1rem' }}
             >
-              {data?.package?.id === plan.id
+              {subscription.package?.id === plan.id
                 ? 'Current Plan'
-                : (data?.is_active ? 'Switch to ' : 'Select ') + plan.name}
+                : (subscription.is_active ? 'Switch to ' : 'Select ') + plan.name}
             </Button>
             <Typography variant='caption' color='secondary'>
               {plan.description}

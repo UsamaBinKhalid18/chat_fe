@@ -12,10 +12,13 @@ import AuthenticationModal from './Authentication/AuthenticationModal';
 import ModelSelector from './ModelSelector';
 import { StyledIconButton } from './SideBar';
 const NavBar = styled(Box)`
-  margin: 10px 12px;
-  position: static;
-  padidng: 8px;
-  height: 44px;
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  background-color: ${(props) => props.theme.palette.background.default};
+  padding: 10px 12px;
+  height: 60px;
   display: flex;
   align-items: center;
   gap: 8px;

@@ -4,9 +4,7 @@ import {
   AnalyzeImageSVG,
   BrainstormSVG,
   CodeSVG,
-  CreateImageSVG,
   ProcessDocSVG,
-  SummarizeSVG,
   WebSearchSVG,
   WriteSVG,
 } from 'src/assets/images/svgs';
@@ -25,12 +23,12 @@ export const autoFills: autoFillType[] = [
     startingText: 'Help me write',
     options: ['a speech', 'a poem', 'a blog post', 'a professional email', 'a story'],
   },
-  {
-    name: 'Create images',
-    icon: <CreateImageSVG />,
-    startingText: 'Create an image of',
-    options: ['a logo', 'a banner', 'an avatar', 'a meme', 'a landscape'],
-  },
+  // {
+  //   name: 'Create images',
+  //   icon: <CreateImageSVG />,
+  //   startingText: 'Create an image of',
+  //   options: ['a logo', 'a banner', 'an avatar', 'a meme', 'a landscape'],
+  // },
   {
     name: 'Code',
     icon: <CodeSVG />,
@@ -55,12 +53,12 @@ export const autoFills: autoFillType[] = [
       'recognizing text',
     ],
   },
-  {
-    name: 'Summarize',
-    icon: <SummarizeSVG />,
-    startingText: 'Summarize the text about',
-    options: ['a book', 'an article', 'a movie', 'a meeting', 'a project'],
-  },
+  // {
+  //   name: 'Summarize',
+  //   icon: <SummarizeSVG />,
+  //   startingText: 'Summarize the text about',
+  //   options: ['a book', 'an article', 'a movie', 'a meeting', 'a project'],
+  // },
   {
     name: 'Get Advice',
     icon: <AdviceSVG />,

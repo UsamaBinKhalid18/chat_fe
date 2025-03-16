@@ -17,7 +17,7 @@ export const uploadApi = api.injectEndpoints({
     }),
     deleteFile: builder.mutation({
       query: (id) => ({
-        url: endpoints.UPLOAD,
+        url: endpoints.DELETE_FILE,
         method: 'DELETE',
         body: { id },
       }),

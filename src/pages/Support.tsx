@@ -1,16 +1,9 @@
 import { ArrowRight, EmailOutlined } from '@mui/icons-material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import {
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Typography,
-  Box,
-  Link,
-} from '@mui/material';
+import { Accordion, AccordionSummary, AccordionDetails, Typography, Box } from '@mui/material';
 
 import ColumnBox from 'src/components/common/ColumnBox';
-import RowBox from 'src/components/common/RowBox';
+import useResponsive from 'src/hooks/useResponsive';
 
 const faqData = [
   {
@@ -67,12 +60,13 @@ const faqData = [
 ];
 
 export default function Support() {
+  const { isMobile } = useResponsive();
   return (
     <ColumnBox gap={2}>
-      <Typography mt={10} variant='h3' width='90%' textAlign='center'>
+      <Typography mt={6} variant='h3' width='90%' textAlign='center'>
         Talk with our team
       </Typography>
-      <RowBox
+      <Box
         component='a'
         href='mailto:support@chatifyai.app'
         color='#ddd'
@@ -83,12 +77,18 @@ export default function Support() {
           cursor: 'pointer',
           textDecoration: 'none',
           gap: 2,
-          minWidth: 400,
+          minWidth: isMobile ? '90%' : 400,
           alignItems: 'center',
+          display: 'flex',
+          justifyContent: 'center',
           mb: 6,
+          '&:hover': { backgroundColor: '#383838', '& .emailIcon': { backgroundColor: '#002358' } },
         }}
       >
-        <ColumnBox sx={{ backgroundColor: '#666', padding: 1, borderRadius: 8 }}>
+        <ColumnBox
+          className='emailIcon'
+          sx={{ backgroundColor: '#666', padding: 1, borderRadius: 8 }}
+        >
           <EmailOutlined sx={{ margin: 'auto' }} />
         </ColumnBox>
         <ColumnBox alignItems='start'>
@@ -98,7 +98,7 @@ export default function Support() {
           <Typography variant='caption'>We aim to respond within a day</Typography>
         </ColumnBox>
         <ArrowRight sx={{ marginLeft: 'auto' }} />
-      </RowBox>
+      </Box>
       <Box
         width='90%'
         maxWidth='800px'
@@ -123,7 +123,7 @@ export default function Support() {
           Discover more information by exploring our FAQ section
         </Typography>
         {faqData.map((faq, index) => (
-          <Accordion key={index} defaultExpanded={index === 0}>
+          <Accordion key={index}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography style={{ fontSize: '16px', fontWeight: 600 }}>{faq.question}</Typography>
             </AccordionSummary>

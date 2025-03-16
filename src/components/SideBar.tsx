@@ -2,14 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  Add,
-  KeyboardTab as Collapse,
-  CreditCard,
-  Extension,
-  Help,
-  KeyboardArrowDown,
-} from '@mui/icons-material';
+import { Add, KeyboardTab as Collapse, KeyboardArrowDown } from '@mui/icons-material';
 import {
   Avatar,
   Box,
@@ -23,9 +16,9 @@ import {
 } from '@mui/material';
 import MuiDrawer from '@mui/material/Drawer';
 
+import { IMAGES } from 'src/assets/images';
 import {
   ChatSVG,
-  GPT,
   ImageSVG,
   PricingSVG,
   SearchSVG,
@@ -267,7 +260,7 @@ export default function SideBar({
         }}
       >
         <DrawerHeader>
-          <GPT color='white' style={{ maxWidth: 28, maxHeight: 28 }} />
+          <img src={IMAGES.logoGreen} style={{ maxWidth: 40, maxHeight: 40 }} />
           {open && (
             <>
               <Typography fontSize={16} fontWeight={500} color='white'>

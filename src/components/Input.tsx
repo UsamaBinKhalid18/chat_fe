@@ -1,13 +1,23 @@
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { ArrowUpward, Attachment, Close, Send, Stop } from '@mui/icons-material';
-import { Box, IconButton, TextField } from '@mui/material';
+import { ArrowUpward, Attachment, Close, Stop } from '@mui/icons-material';
+import {
+  Box,
+  IconButton,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  TextField,
+  Typography,
+} from '@mui/material';
 
 import { useFormik } from 'formik';
 import { useDeleteFileMutation, useUploadMutation } from 'src/apis/uploadApi';
 import { addNotification } from 'src/redux/reducers/notificationSlice';
 
+import { autoFills } from './Autofills';
 import ColumnBox from './common/ColumnBox';
 import RowBox from './common/RowBox';
 
@@ -101,19 +111,26 @@ export default function Input({
     },
   });
 
-  const inputRef = useRef<HTMLInputElement>();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [upload] = useUploadMutation();
   const dispatch = useDispatch();
   const [uploading, setUploading] = useState(false);
   const [file, setFile] = useState<FileUpload | null>(null);
   const [deleteFile] = useDeleteFileMutation();
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
+  const matchedAutoFill = autoFills.find((autoFill) =>
+    formik.values.message.startsWith(autoFill.startingText),
+  );
+
   useEffect(() => {
     if (text) {
       formik.setFieldValue('message', text + ' ');
-      // focus on the input field
       inputRef.current?.focus();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [text]);
 
   const handleFileChange = async (event: any) => {
@@ -148,6 +165,10 @@ export default function Input({
     if (file) {
       try {
         await deleteFile(file.uuid).unwrap();
+        formik.setFieldValue('file', '');
+        setFile(null);
+        const fileInput = fileInputRef.current;
+        if (fileInput) fileInput.value = '';
       } catch (e: any) {
         dispatch(
           addNotification({ message: 'Failed to delete file', type: 'error', id: Date.now() }),
@@ -155,8 +176,6 @@ export default function Input({
         console.error(e);
       }
     }
-    formik.setFieldValue('file', '');
-    setFile(null);
   };
 
   return (
@@ -166,14 +185,28 @@ export default function Input({
         e.preventDefault();
         formik.handleSubmit();
       }}
-      sx={{ backgroundColor: 'background.paper', borderRadius: 6 }}
+      sx={{
+        position: 'relative',
+        backgroundColor: 'background.paper',
+        borderRadius: 6,
+        transition: 'background-color 0.5s',
+        '&:hover': {
+          backgroundColor: '#444',
+        },
+      }}
       p={1}
       width={'100%'}
       alignItems='start'
     >
       {(file || uploading) && <FileBox file={file} removeFile={removeFile} />}
       <RowBox width={'100%'} gap={2}>
-        <input type='file' id='file' style={{ display: 'none' }} onChange={handleFileChange} />
+        <input
+          type='file'
+          id='file'
+          ref={fileInputRef}
+          style={{ display: 'none' }}
+          onChange={handleFileChange}
+        />
         <IconButton sx={{ width: 32, height: 32 }} component='label' htmlFor='file'>
           <Attachment />
         </IconButton>
@@ -217,6 +250,63 @@ export default function Input({
           )}
         </IconButton>
       </RowBox>
+      {matchedAutoFill && (
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            right: 0,
+            backgroundColor: 'background.default',
+            borderRadius: 6,
+            zIndex: 1,
+            height: 400,
+            pt: 2,
+          }}
+        >
+          <List sx={{ color: 'white', padding: 0, paddingX: 5 }}>
+            {matchedAutoFill.options.map((item, index) => (
+              <ListItem
+                key={item}
+                disablePadding
+                sx={{
+                  margin: 0,
+                }}
+              >
+                <ListItemButton
+                  onMouseEnter={() => setHoveredIndex(index)}
+                  onMouseLeave={() => setHoveredIndex(null)}
+                  sx={{
+                    borderBottom:
+                      index === matchedAutoFill.options.length - 1 ? 'none' : '1px solid #353535',
+                    borderBottomColor: hoveredIndex === index + 1 ? 'transparent' : '#353535',
+                    '&:hover': {
+                      backgroundColor: '#353535',
+                      borderRadius: 1.5,
+                      borderBottom: '1px solid transparent',
+                    },
+                  }}
+                  onClick={() => {
+                    formik.setFieldValue('message', `${matchedAutoFill.startingText} ${item}`);
+                    formik.submitForm();
+                  }}
+                >
+                  <ListItemText
+                    primary={
+                      <>
+                        <Typography component='span' color='text.secondary'>
+                          {matchedAutoFill.startingText}{' '}
+                        </Typography>
+                        <Typography component='span'>{item}</Typography>
+                      </>
+                    }
+                  />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+      )}
     </ColumnBox>
   );
 }

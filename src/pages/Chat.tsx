@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { InsertDriveFile } from '@mui/icons-material';
-import { Box, CircularProgress, styled, Typography } from '@mui/material';
+import { Cached, ContentCopy, InsertDriveFile } from '@mui/icons-material';
+import { Box, CircularProgress, IconButton, styled, Typography } from '@mui/material';
 
 import { aiModels } from 'src/common/constants';
 import { utils } from 'src/common/utils';
@@ -13,8 +13,10 @@ import Input from 'src/components/Input';
 import MarkdownRenderer from 'src/components/MarkdownRenderer';
 import ModelSelector from 'src/components/ModelSelector';
 import { API_BASE_URL } from 'src/config';
+import useResponsive from 'src/hooks/useResponsive';
 import useStream from 'src/hooks/useStream';
 import { selectModel, setModel } from 'src/redux/reducers/chatCompletionSlice';
+import { addNotification } from 'src/redux/reducers/notificationSlice';
 
 const InputWrapper = styled(Box)(
   ({ theme }) => `
@@ -24,7 +26,6 @@ const InputWrapper = styled(Box)(
   width: 90%;
   max-width: 700px;
   padding: 8px 0px;
-  padding-bottom: 12px;
   background-color: ${theme.palette.background.default};
   z-index: 1000; // Ensure it's above other content
 `,
@@ -59,6 +60,7 @@ export default function Chat() {
   const { message: initialMessage, fileId, fileUrl, fileName } = location.state || {};
   const model = useSelector(selectModel);
   const navigate = useNavigate();
+  const { isMobile } = useResponsive();
 
   const [messages, setMessages] = useState<Message[]>(
     initialMessage
@@ -66,36 +68,32 @@ export default function Chat() {
       : [],
   );
   const { data, isLoading, startStreaming, stopStreaming } = useStream(
-    `${API_BASE_URL}/api/v1/chat-completion/`,
+    `${API_BASE_URL}/api/fastapi/chat-completion/`,
   );
-  useEffect(() => {
-    startStreaming([{ text: initialMessage, isUser: true, model, fileId, fileUrl, fileName }]);
-  }, []);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (!initialMessage) {
       navigate('/');
+      return () => stopStreaming();
     }
-    return () => stopStreaming();
+    startStreaming([{ text: initialMessage, isUser: true, model, fileId, fileUrl, fileName }]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (data) {
-      setMessages((messages) => {
-        if (messages.at(-1)?.isUser === false) {
-          return [
-            ...messages.slice(0, -1),
-            { text: data, isUser: false, model: messages.at(-1)?.model || model },
-          ];
-        } else {
-          return [
-            ...messages,
-            { text: data, isUser: false, model: messages.at(-1)?.model || model },
-          ];
-        }
-      });
-    }
+    setMessages((messages) => {
+      if (messages.at(-1)?.isUser === false) {
+        return [
+          ...messages.slice(0, -1),
+          { text: data, isUser: false, model: messages.at(-1)?.model || model },
+        ];
+      } else {
+        return [...messages, { text: data, isUser: false, model: messages.at(-1)?.model || model }];
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   useEffect(() => {
@@ -103,6 +101,15 @@ export default function Chat() {
       window.scrollTo(0, document.body.scrollHeight);
     }
   }, [isLoading, data]);
+  const streamFromIndex = (index: number, model?: string) => {
+    const newMessages = messages.slice(0, index);
+    if (model) {
+      dispatch(setModel(model));
+      newMessages[index - 1] = { ...newMessages[index - 1], model };
+    }
+    setMessages(newMessages);
+    startStreaming(newMessages);
+  };
 
   return (
     <Container>
@@ -112,8 +119,8 @@ export default function Chat() {
             <Box
               key={index}
               alignSelf={message.isUser ? 'end' : 'start'}
-              maxWidth={message.isUser ? '70%' : '100%'}
-              padding={message.isUser ? '0 1rem' : 0}
+              maxWidth={message.isUser ? '70%' : 'calc(100% - 42px)'}
+              padding={message.isUser ? '0 .25rem' : 0}
               borderRadius={4}
               display='flex'
               alignItems='start'
@@ -140,15 +147,15 @@ export default function Chat() {
                   width='30px'
                   height='30px'
                   style={{
-                    marginTop: '4px',
-                    marginRight: '8px',
+                    marginTop: '8px',
+                    marginRight: '12px',
                     borderRadius: '50%',
                     border: '1px solid grey',
                   }}
                 />
               )}
 
-              <ColumnBox alignItems='start' gap={1}>
+              <ColumnBox alignItems='start' gap={1} maxWidth='100%'>
                 {message.fileName &&
                   message.isUser &&
                   // file extension if image
@@ -180,10 +187,56 @@ export default function Chat() {
                   padding={message.isUser ? '0 1rem' : 0}
                   borderRadius={4}
                   sx={{ backgroundColor: message.isUser ? '#333' : 'secondary' }}
+                  maxWidth='100%'
                 >
-                  <MarkdownRenderer content={message.text} />
+                  <Box
+                    mt={
+                      message.text.startsWith('##') ? -2.5 : message.text.startsWith('```') ? -1 : 0
+                    }
+                  >
+                    <MarkdownRenderer content={message.text} />
+                  </Box>
                   {isLoading && !message.isUser && index == messages.length - 1 && (
-                    <CircularProgress size={20} />
+                    <CircularProgress size={20} sx={{ margin: message.text ? 0 : 1.75 }} />
+                  )}
+                  {!message.isUser && (!isLoading || index !== messages.length - 1) && (
+                    <RowBox gap={1}>
+                      <IconButton
+                        sx={{
+                          ':hover': { backgroundColor: 'transparent' },
+                          maxWidth: '22px',
+                          maxHeight: '22px',
+                        }}
+                        onClick={() => {
+                          navigator.clipboard.writeText(message.text);
+                          dispatch(
+                            addNotification({
+                              id: Date.now(),
+                              message: 'Copied to clipboard',
+                              type: 'success',
+                            }),
+                          );
+                        }}
+                      >
+                        <ContentCopy htmlColor='#aaa' sx={{ height: '20px', width: '20px' }} />
+                      </IconButton>
+                      <IconButton
+                        sx={{
+                          ':hover': { backgroundColor: 'transparent' },
+                          maxWidth: '22px',
+                          maxHeight: '22px',
+                        }}
+                        onClick={() => streamFromIndex(index)}
+                      >
+                        <Cached htmlColor='#aaa' sx={{ height: '22px', width: '22px' }} />
+                      </IconButton>
+                      <ModelSelector
+                        models={aiModels}
+                        activeModel={message.model}
+                        onChange={(model) => streamFromIndex(index, model)}
+                        showBackground={false}
+                      />
+                    </RowBox>
                   )}
                 </Box>
               </ColumnBox>
@@ -204,7 +257,13 @@ export default function Chat() {
           isStreaming={isLoading}
           handleStopStreaming={stopStreaming}
         />
-        <Typography textAlign='center' fontSize={14} pt={1} color='secondary' alignSelf='center'>
+        <Typography
+          textAlign='center'
+          fontSize={isMobile ? 12 : 14}
+          pt={1}
+          color='secondary'
+          alignSelf='center'
+        >
           Chatify can make mistakes. Check important info.
         </Typography>
       </InputWrapper>

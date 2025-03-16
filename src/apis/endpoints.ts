@@ -1,6 +1,6 @@
 const USERS = 'api/v1/users';
 const PAYMENTS = 'api/v1/payments';
-const CHAT_COMPLETION = 'api/v1/chat-completion';
+// const CHAT_COMPLETION = 'api/v1/chat-completion';
 
 export const endpoints = {
   LOGIN: `${USERS}/login/`,
@@ -16,5 +16,6 @@ export const endpoints = {
 
   SUBSCRIPTION: `${PAYMENTS}/subscription/`,
   CHECKOUT: `${PAYMENTS}/checkout/`,
-  UPLOAD: `${CHAT_COMPLETION}/upload/`,
+  UPLOAD: `api/fastapi/upload-file/`,
+  DELETE_FILE: `api/fastapi/delete-file/`,
 } as const;

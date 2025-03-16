@@ -27,7 +27,7 @@ const useStream = (url: string) => {
   const navigate = useNavigate();
   const user = useSelector(selectCurrentUser);
 
-  const startStreaming = async (messages: Message[]) => {
+  const startStreaming = async (messages: Message[], token?: string) => {
     if (isStreaming.current) return; // Prevent double execution
     isStreaming.current = true;
     abortController.current = new AbortController(); // Create a new AbortController
@@ -38,7 +38,10 @@ const useStream = (url: string) => {
     try {
       const response = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token ? token : accessToken}`,
+        },
         body: JSON.stringify({ messages: messages, model }),
         signal: abortController.current.signal, // Attach abort signal
       });
@@ -55,10 +58,9 @@ const useStream = (url: string) => {
         );
 
         if (refreshResponse.status === 200) {
-          console.log('here');
           const { access } = await refreshResponse.json();
           dispatch(updateAccessToken({ access, refresh: refreshToken }));
-          return startStreaming(messages);
+          setTimeout(() => startStreaming(messages, access), 0);
         } else {
           dispatch(logOut());
           dispatch(

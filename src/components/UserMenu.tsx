@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Logout, Settings } from '@mui/icons-material';
+import { Logout } from '@mui/icons-material';
 import { styled, Typography } from '@mui/material';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import Menu from '@mui/material/Menu';
@@ -52,10 +52,10 @@ export function UserMenu({ handleClose, anchorEl }: UserMenuProps) {
           horizontal: 'right',
         }}
       >
-        <StyledMenuItem onClick={handleClose}>
+        {/* <StyledMenuItem onClick={handleClose}>
           <Settings htmlColor='white' />
           <Typography color='white'>Settings</Typography>
-        </StyledMenuItem>
+        </StyledMenuItem> */}
         <StyledMenuItem
           onClick={(e) => {
             logout();

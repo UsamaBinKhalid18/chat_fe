@@ -8,16 +8,30 @@ interface ModelSelectorProps {
   models: AIModelType[];
   activeModel: string;
   onChange: (modelName: string) => void;
+  showBackground?: boolean;
 }
 
-const ModelSelector: React.FC<ModelSelectorProps> = ({ models, activeModel, onChange }) => {
+const ModelSelector: React.FC<ModelSelectorProps> = ({
+  models,
+  activeModel,
+  onChange,
+  showBackground = true,
+}) => {
   return (
     <Select
       value={activeModel}
       onChange={(e) => onChange(e.target.value as string)}
       displayEmpty
       inputProps={{ sx: { padding: 1 } }}
-      sx={{ borderRadius: 4, minWidth: 200, alignSelf: 'start' }} // Adjust width as needed
+      sx={{
+        borderRadius: 4,
+        minWidth: 200,
+        alignSelf: 'start',
+        background: (theme) => (showBackground ? theme.palette.background.paper : 'transparent'),
+        fieldset: {
+          border: 'none',
+        },
+      }}
     >
       {models.map((model) => (
         <MenuItem key={model.name} value={model.name}>
