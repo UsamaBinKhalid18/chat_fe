@@ -260,7 +260,7 @@ export default function SideBar({
         }}
       >
         <DrawerHeader>
-          <img src={IMAGES.logoGreen} style={{ maxWidth: 40, maxHeight: 40 }} />
+          <img src={IMAGES.logoGreen} style={{ maxWidth: 30, maxHeight: 30 }} />
           {open && (
             <>
               <Typography fontSize={16} fontWeight={500} color='white'>

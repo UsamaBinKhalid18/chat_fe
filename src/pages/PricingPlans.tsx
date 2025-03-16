@@ -73,7 +73,7 @@ export default function PricingPlans() {
   const user = useSelector(selectCurrentUser);
   const dispatch = useDispatch();
   const [createStripeSession] = useCreateStripeSessionMutation();
-  const [cancelSubsciption] = useCancelSubscriptionMutation();
+  const [cancelSubsciption, { isLoading }] = useCancelSubscriptionMutation();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -83,7 +83,8 @@ export default function PricingPlans() {
     dispatch(
       addNotification({
         id: new Date().getTime(),
-        message: 'Payment successful. Thank you for subscribing',
+        message:
+          "Payment successful. Thank you for subscribing. If you don't see the changes, please wait for a few moments and refresh the page.",
         type: 'success',
       }),
     );
@@ -115,7 +116,14 @@ export default function PricingPlans() {
 
   const unsubscribe = async () => {
     try {
-      await cancelSubsciption({ id: subscription.package.id ?? 0 }).unwrap();
+      await cancelSubsciption({ id: subscription.id ?? 0 }).unwrap();
+      dispatch(
+        addNotification({
+          id: new Date().getTime(),
+          message: 'Subscription cancelled successfully',
+          type: 'success',
+        }),
+      );
     } catch (e: any) {
       console.error(e);
       dispatch(
@@ -158,6 +166,7 @@ export default function PricingPlans() {
             </ColumnBox>
             <Button
               color='error'
+              loading={isLoading}
               variant='outlined'
               onClick={() => unsubscribe()}
               sx={{ marginLeft: 'auto', width: isMobile ? '100%' : 'fit-content' }}
