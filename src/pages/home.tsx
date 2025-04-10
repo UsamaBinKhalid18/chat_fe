@@ -11,7 +11,7 @@ import RowBox from 'src/components/common/RowBox';
 import Input from 'src/components/Input';
 import useResponsive from 'src/hooks/useResponsive';
 import { selectCurrentUser } from 'src/redux/reducers/authSlice';
-import { addNotification, setLoginModal } from 'src/redux/reducers/notificationSlice';
+import { setLoginModal, setUpgradePlanModal } from 'src/redux/reducers/notificationSlice';
 import { selectSubscription } from 'src/redux/reducers/subscriptionSlice';
 
 export function Home() {
@@ -21,7 +21,6 @@ export function Home() {
   const user = useSelector(selectCurrentUser);
   const subscription = useSelector(selectSubscription);
   const { isMobile } = useResponsive();
-
   const handleInputSubmit = (
     message: string,
     fileId?: string,
@@ -29,16 +28,11 @@ export function Home() {
     fileName?: string,
   ) => {
     if (!user) return dispatch(setLoginModal(true));
-    if (subscription.is_active)
+    if (subscription.is_active || subscription.free_requests > 0)
       return navigate('/chat', { state: { message, fileId, fileUrl, fileName } });
-    navigate('/pricing');
-    dispatch(
-      addNotification({
-        message: 'Please subscribe to a plan to continue',
-        type: 'info',
-        id: Date.now(),
-      }),
-    );
+    if (subscription.free_requests <= 0) {
+      return dispatch(setUpgradePlanModal(true));
+    }
   };
   return (
     <ColumnBox minHeight='100%'>
@@ -70,7 +64,7 @@ export function Home() {
                 sx={{
                   padding: 2,
                   borderRadius: 4,
-                  border: '1px solid, #424242',
+                  border: '1px solid,rgb(221, 221, 221)',
                   backgroundColor: 'background.paper',
                   '&:hover': {
                     backgroundColor: 'action.hover',

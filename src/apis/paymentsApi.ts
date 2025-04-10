@@ -9,6 +9,7 @@ export type Subscription = {
     id: number;
     name: string;
   };
+  free_requests: number;
 };
 
 export const paymentsApi = api.injectEndpoints({
@@ -32,6 +33,11 @@ export const paymentsApi = api.injectEndpoints({
         body: { subscription_id: id },
       }),
     }),
+    getFreeRequests: builder.query<{ remaining_requests: number }, void>({
+      query: () => ({
+        url: endpoints.GET_FREE_REQUESTS,
+      }),
+    }),
   }),
 });
 
@@ -39,4 +45,5 @@ export const {
   useGetSubscriptionQuery,
   useCreateStripeSessionMutation,
   useCancelSubscriptionMutation,
+  useGetFreeRequestsQuery,
 } = paymentsApi;

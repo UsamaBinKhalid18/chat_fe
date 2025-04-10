@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { ArrowUpward, Attachment, Close, Stop } from '@mui/icons-material';
 import {
@@ -15,7 +15,13 @@ import {
 
 import { useFormik } from 'formik';
 import { useDeleteFileMutation, useUploadMutation } from 'src/apis/uploadApi';
-import { addNotification } from 'src/redux/reducers/notificationSlice';
+import { selectCurrentUser } from 'src/redux/reducers/authSlice';
+import {
+  addNotification,
+  setLoginModal,
+  setUpgradePlanModal,
+} from 'src/redux/reducers/notificationSlice';
+import { selectSubscription } from 'src/redux/reducers/subscriptionSlice';
 
 import { autoFills } from './Autofills';
 import ColumnBox from './common/ColumnBox';
@@ -95,6 +101,8 @@ export default function Input({
   handleStopStreaming?: () => void;
   text?: string;
 }) {
+  const user = useSelector(selectCurrentUser);
+  const subscription = useSelector(selectSubscription);
   const formik = useFormik({
     initialValues: {
       message: '',
@@ -102,6 +110,24 @@ export default function Input({
     onSubmit: (values) => {
       formik.setFieldValue('message', '');
       setFile(null);
+      if (!user) {
+        dispatch(setLoginModal(true));
+        return;
+      }
+      if (!subscription.is_active && !(subscription.free_requests > 0)) {
+        dispatch(setUpgradePlanModal(true));
+        return;
+      }
+      if (values.message.length >= 16000) {
+        dispatch(
+          addNotification({
+            message: 'Message is too long',
+            type: 'error',
+            id: Date.now(),
+          }),
+        );
+        return;
+      }
       onSubmit(
         values.message,
         file?.uuid ?? undefined,
@@ -136,10 +162,10 @@ export default function Input({
   const handleFileChange = async (event: any) => {
     const newFile = event.currentTarget.files[0];
     if (!newFile) return;
-    if (newFile.size > 10 * 1024 * 1024)
+    if (newFile.size > 5 * 1024 * 1024)
       return dispatch(
         addNotification({
-          message: 'File size should be less than 10MB',
+          message: 'File size should be less than 5MB',
           type: 'error',
           id: Date.now(),
         }),
@@ -190,9 +216,6 @@ export default function Input({
         backgroundColor: 'background.paper',
         borderRadius: 6,
         transition: 'background-color 0.5s',
-        '&:hover': {
-          backgroundColor: '#444',
-        },
       }}
       p={1}
       width={'100%'}
@@ -205,6 +228,16 @@ export default function Input({
           id='file'
           ref={fileInputRef}
           style={{ display: 'none' }}
+          onClick={(e) => {
+            if (!user) {
+              e.preventDefault();
+              return dispatch(setLoginModal(true));
+            }
+            if (!subscription.is_active && !(subscription.free_requests > 0)) {
+              e.preventDefault();
+              return dispatch(setUpgradePlanModal(true));
+            }
+          }}
           onChange={handleFileChange}
         />
         <IconButton sx={{ width: 32, height: 32 }} component='label' htmlFor='file'>
@@ -237,16 +270,19 @@ export default function Input({
           sx={{
             width: 32,
             height: 32,
-            backgroundColor: 'white !important',
+            backgroundColor: 'background.dark',
             '&:disabled': {
-              backgroundColor: 'gray !important',
+              backgroundColor: 'lightgrey',
+            },
+            '&:hover': {
+              backgroundColor: 'grey',
             },
           }}
         >
           {isStreaming ? (
-            <Stop htmlColor='#111' sx={{ width: 20, height: 20 }} />
+            <Stop htmlColor='#fff' sx={{ width: 20, height: 20 }} />
           ) : (
-            <ArrowUpward htmlColor='#111' sx={{ width: 20, height: 20 }} />
+            <ArrowUpward htmlColor='#fff' sx={{ width: 20, height: 20 }} />
           )}
         </IconButton>
       </RowBox>
@@ -278,10 +314,10 @@ export default function Input({
                   onMouseLeave={() => setHoveredIndex(null)}
                   sx={{
                     borderBottom:
-                      index === matchedAutoFill.options.length - 1 ? 'none' : '1px solid #353535',
-                    borderBottomColor: hoveredIndex === index + 1 ? 'transparent' : '#353535',
+                      index === matchedAutoFill.options.length - 1 ? 'none' : '1px solid #e2e2e2',
+                    borderBottomColor: hoveredIndex === index + 1 ? 'transparent' : '#e2e2e2',
                     '&:hover': {
-                      backgroundColor: '#353535',
+                      backgroundColor: 'background.paper',
                       borderRadius: 1.5,
                       borderBottom: '1px solid transparent',
                     },
@@ -297,7 +333,9 @@ export default function Input({
                         <Typography component='span' color='text.secondary'>
                           {matchedAutoFill.startingText}{' '}
                         </Typography>
-                        <Typography component='span'>{item}</Typography>
+                        <Typography component='span' color='dark' fontWeight={500}>
+                          {item}
+                        </Typography>
                       </>
                     }
                   />

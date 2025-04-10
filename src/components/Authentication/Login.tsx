@@ -44,6 +44,7 @@ export default function Login({ handleClose }: LoginModalProps) {
       formik.resetForm();
       setBackendError('');
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -56,6 +57,7 @@ export default function Login({ handleClose }: LoginModalProps) {
           {...formik.getFieldProps('email')}
           error={Boolean(formik.touched.email && formik.errors.email)}
           helperText={formik.touched.email && formik.errors.email}
+          size='small'
         />
         <TextField
           label='Password'
@@ -65,6 +67,7 @@ export default function Login({ handleClose }: LoginModalProps) {
           {...formik.getFieldProps('password')}
           error={Boolean(formik.touched.password && formik.errors.password)}
           helperText={formik.touched.password && formik.errors.password}
+          size='small'
         />
         {backendError && <Typography color='error'>{backendError}</Typography>}
         <Button

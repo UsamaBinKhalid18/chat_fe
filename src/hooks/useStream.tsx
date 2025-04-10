@@ -13,7 +13,12 @@ import {
   updateAccessToken,
 } from 'src/redux/reducers/authSlice';
 import { selectModel } from 'src/redux/reducers/chatCompletionSlice';
-import { addNotification, setLoginModal } from 'src/redux/reducers/notificationSlice';
+import {
+  addNotification,
+  setLoginModal,
+  setUpgradePlanModal,
+} from 'src/redux/reducers/notificationSlice';
+import { reduceFreeRequests, setFreeRequests } from 'src/redux/reducers/subscriptionSlice';
 
 const useStream = (url: string) => {
   const [data, setData] = useState('');
@@ -27,7 +32,10 @@ const useStream = (url: string) => {
   const navigate = useNavigate();
   const user = useSelector(selectCurrentUser);
 
-  const startStreaming = async (messages: Message[], token?: string) => {
+  const startStreaming = async (
+    messages: Message[],
+    props?: { token?: string; modelName?: string },
+  ) => {
     if (isStreaming.current) return; // Prevent double execution
     isStreaming.current = true;
     abortController.current = new AbortController(); // Create a new AbortController
@@ -40,9 +48,9 @@ const useStream = (url: string) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token ? token : accessToken}`,
+          Authorization: `Bearer ${props?.token ? props?.token : accessToken}`,
         },
-        body: JSON.stringify({ messages: messages, model }),
+        body: JSON.stringify({ messages: messages, model: props?.modelName || model }),
         signal: abortController.current.signal, // Attach abort signal
       });
 
@@ -77,21 +85,17 @@ const useStream = (url: string) => {
       }
 
       if (response.status === 403) {
-        dispatch(
-          addNotification({
-            message:
-              'You do not have permission to access this resource. Please make sure you have subscription',
-            type: 'error',
-            id: Date.now(),
-          }),
-        );
-        return navigate('/pricing');
+        dispatch(setUpgradePlanModal(true));
+        dispatch(setFreeRequests(0));
+        return;
       }
 
       if (!response.body || response.status !== 200) {
         setData('Server Busy');
         return;
       }
+
+      dispatch(reduceFreeRequests(1));
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();

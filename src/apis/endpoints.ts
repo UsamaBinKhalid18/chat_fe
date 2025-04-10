@@ -13,6 +13,7 @@ export const endpoints = {
   SEND_VERIFICATION_EMAIL: `${USERS}/send-verification-email/`,
   VERIFY_EMAIL: `${USERS}/verify-email/`,
   REFRESH_TOKEN: (userId: number) => `${USERS}/${userId}/refresh-token/`,
+  GET_FREE_REQUESTS: `${PAYMENTS}/free-requests/`,
 
   SUBSCRIPTION: `${PAYMENTS}/subscription/`,
   CHECKOUT: `${PAYMENTS}/checkout/`,

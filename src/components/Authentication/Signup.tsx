@@ -57,6 +57,7 @@ export default function Signup({ handleClose }: SignupModalProps) {
       formik.resetForm();
       setBackendError('');
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -69,6 +70,7 @@ export default function Signup({ handleClose }: SignupModalProps) {
           {...formik.getFieldProps('firstName')}
           error={Boolean(formik.touched.firstName && formik.errors.firstName)}
           helperText={formik.touched.firstName && formik.errors.firstName}
+          size='small'
         />
         <TextField
           label='Last Name'
@@ -77,6 +79,7 @@ export default function Signup({ handleClose }: SignupModalProps) {
           {...formik.getFieldProps('lastName')}
           error={Boolean(formik.touched.lastName && formik.errors.lastName)}
           helperText={formik.touched.lastName && formik.errors.lastName}
+          size='small'
         />
         <TextField
           label='Email'
@@ -85,6 +88,7 @@ export default function Signup({ handleClose }: SignupModalProps) {
           {...formik.getFieldProps('email')}
           error={Boolean(formik.touched.email && formik.errors.email)}
           helperText={formik.touched.email && formik.errors.email}
+          size='small'
         />
         <TextField
           label='Password'
@@ -94,6 +98,7 @@ export default function Signup({ handleClose }: SignupModalProps) {
           {...formik.getFieldProps('password')}
           error={Boolean(formik.touched.password && formik.errors.password)}
           helperText={formik.touched.password && formik.errors.password}
+          size='small'
         />
         {backendError && <Typography color='error'>{backendError}</Typography>}
         <Button

@@ -13,7 +13,8 @@ import App from './App.tsx';
 import { GOOGLE_CLIENT_ID } from './config.ts';
 import './index.css';
 import { store } from './redux/store.ts';
-import darkTheme from './theme/darkTheme.ts';
+// import darkTheme from './theme/darkTheme.ts';
+import lightTheme from './theme/lightTheme.ts';
 
 const persistor = persistStore(store);
 createRoot(document.getElementById('root')!).render(
@@ -22,7 +23,7 @@ createRoot(document.getElementById('root')!).render(
       <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
         <Provider store={store}>
           <PersistGate persistor={persistor}>
-            <ThemeProvider theme={darkTheme}>
+            <ThemeProvider theme={lightTheme}>
               <CssBaseline />
               <App />
             </ThemeProvider>

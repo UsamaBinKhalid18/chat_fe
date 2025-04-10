@@ -12,10 +12,12 @@ type Notification = {
 interface NotificationState {
   notifications: Notification[];
   loginModal: boolean;
+  upgradePlanModal: boolean;
 }
 const initialState: NotificationState = {
   notifications: [],
   loginModal: false,
+  upgradePlanModal: false,
 };
 
 const notificationSlice = createSlice({
@@ -36,11 +38,15 @@ const notificationSlice = createSlice({
     setLoginModal: (state, action: PayloadAction<boolean>) => {
       state.loginModal = action.payload;
     },
+    setUpgradePlanModal: (state, action: PayloadAction<boolean>) => {
+      state.upgradePlanModal = action.payload;
+    },
   },
 });
 
-export const { addNotification, removeNotificationById, setLoginModal } = notificationSlice.actions;
+export const { addNotification, removeNotificationById, setLoginModal,setUpgradePlanModal } = notificationSlice.actions;
 
 export default notificationSlice.reducer;
 export const selectNotifications = (state: RootState) => state.notification.notifications;
 export const selectLoginModal = (state: RootState) => state.notification.loginModal;
+export const selectUpgradePlanModal = (state: RootState) => state.notification.upgradePlanModal;

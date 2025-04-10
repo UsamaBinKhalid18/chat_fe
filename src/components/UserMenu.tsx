@@ -7,7 +7,6 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 
 import { useLogout } from 'src/hooks/useLogout';
-import { COLORS } from 'src/theme/colors';
 
 interface UserMenuProps {
   handleClose: (e: MouseEvent | TouchEvent | React.MouseEvent) => void;
@@ -16,22 +15,18 @@ interface UserMenuProps {
 
 const StyledMenu = styled(Menu)`
   .MuiPaper-root {
-    width: 208px;
-    background-image: linear-gradient(to right, ${COLORS.gradient.start}, ${COLORS.gradient.end});
+    width: 200px;
+    background-image: ${({ theme }) => theme.palette.gradient};
     transform: translateY(-8px) !important;
     border-radius: 8px;
-    border: 1px solid ${COLORS.button.dark.hover};
+    border: 1px solid #777;
   }
 `;
 
 const StyledMenuItem = styled(MenuItem)`
-  color: white;
   display: flex;
   gap: 16px;
   padding: 8px 16px;
-  &:hover {
-    background: ${COLORS.button.dark.hover};
-  }
 `;
 
 export function UserMenu({ handleClose, anchorEl }: UserMenuProps) {
@@ -62,8 +57,8 @@ export function UserMenu({ handleClose, anchorEl }: UserMenuProps) {
             handleClose(e);
           }}
         >
-          <Logout htmlColor='white' />
-          <Typography color='white'>Logout</Typography>
+          <Logout />
+          <Typography>Logout</Typography>
         </StyledMenuItem>
       </StyledMenu>
     </ClickAwayListener>

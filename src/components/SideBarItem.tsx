@@ -2,8 +2,6 @@ import React from 'react';
 
 import { ListItemButton, ListItemIcon, ListItemText, styled } from '@mui/material';
 
-import { COLORS } from 'src/theme/colors';
-
 interface SideBarItemProps {
   icon: React.ReactNode;
   title: string;
@@ -21,11 +19,7 @@ const StyledListItemButton = styled(ListItemButton, {
   padding: ${({ collapsed }) => (collapsed ? '8px 12px' : '4px 12px')};
   width: 100%;
   height: ${({ collapsed }) => (collapsed ? '60px' : '44px')};
-  color: white;
   border-radius: 8px;
-  &:hover {
-    background-color: ${COLORS.button.dark.hover};
-  }
 `;
 
 export function SideBarItem({
@@ -44,7 +38,6 @@ export function SideBarItem({
     >
       <ListItemIcon sx={{ minWidth: '18px', padding: collapsed ? '4px' : '0px' }}>
         {React.cloneElement(icon as React.ReactElement, {
-          htmlColor: COLORS.sideBarIcon,
           sx: { width: '18px', height: '18px' },
         })}
       </ListItemIcon>

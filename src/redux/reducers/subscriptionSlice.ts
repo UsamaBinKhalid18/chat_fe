@@ -11,22 +11,36 @@ const initialState: Subscription = {
     id: 0,
     name: '',
   },
+  free_requests: 0,
 };
 
 const subscriptionSlice = createSlice({
   name: 'subscription',
   initialState: initialState,
-  reducers: {},
+  reducers: {
+    setFreeRequests: (state, action) => {
+      state.free_requests = action.payload;
+    },
+    reduceFreeRequests: (state, action) => {
+      if (!state.is_active) {
+        state.free_requests -= action.payload;
+      }
+    },
+  },
   extraReducers(builder) {
     builder
       .addMatcher(paymentsApi.endpoints.getSubscription.matchFulfilled, (state, action) => {
-        return { ...state, ...action.payload };
+        return { ...state, ...action.payload, free_requests: state.free_requests };
       })
-      .addMatcher(paymentsApi.endpoints.cancelSubscription.matchFulfilled, () => {
-        return { ...initialState };
+      .addMatcher(paymentsApi.endpoints.cancelSubscription.matchFulfilled, (state) => {
+        return { ...initialState, free_requests: state.free_requests };
+      })
+      .addMatcher(paymentsApi.endpoints.getFreeRequests.matchFulfilled, (state, action) => {
+        return { ...state, free_requests: action.payload.remaining_requests };
       });
   },
 });
 
 export default subscriptionSlice.reducer;
+export const { setFreeRequests, reduceFreeRequests } = subscriptionSlice.actions;
 export const selectSubscription = (state: RootState) => state.subscription;

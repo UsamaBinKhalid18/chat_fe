@@ -6,7 +6,9 @@ import { Box, Button, styled, Typography, useTheme } from '@mui/material';
 import {
   useCancelSubscriptionMutation,
   useCreateStripeSessionMutation,
+  useGetFreeRequestsQuery,
 } from 'src/apis/paymentsApi';
+import { subscriptionPlans } from 'src/common/constants';
 import { utils } from 'src/common/utils';
 import ColumnBox from 'src/components/common/ColumnBox';
 import RowBox from 'src/components/common/RowBox';
@@ -15,58 +17,23 @@ import { selectCurrentUser } from 'src/redux/reducers/authSlice';
 import { addNotification, setLoginModal } from 'src/redux/reducers/notificationSlice';
 import { selectSubscription } from 'src/redux/reducers/subscriptionSlice';
 
+import ChatlyProComparison from './Comparison';
+import FAQs from './FAQs';
+
 interface StatusProps {
   active: boolean;
 }
 
 const Status = styled(Typography)<StatusProps>`
   display: inline-block;
-  color: ${({ active, theme }) => (active ? theme.palette.success.dark : 'red')};
-  border-radius: 4px;
-  padding: 1px 8px;
+  color: ${({ active, theme }) => (active ? theme.palette.success.light : 'red')};
+  border-radius: 8px;
+  padding: 0px 4px;
   margin-left: 8px;
-  border: 1px solid ${({ active, theme }) => (active ? theme.palette.success.dark : 'red')};
+  font-size: 1rem;
+  font-weight: 700;
+  border: 2px solid ${({ active, theme }) => (active ? theme.palette.success.light : 'red')};
 `;
-
-type SubscriptionPlan = {
-  id: number;
-  name: string;
-  price: number;
-  description: string;
-  discount: number;
-  previousPrice: number;
-  frequency: string;
-};
-const subscriptionPlans: SubscriptionPlan[] = [
-  {
-    id: 1,
-    name: 'Monthly',
-    price: 20,
-    description: 'Get a taste of pro membership and enjoy unlimited chats for one month.',
-    discount: 0,
-    previousPrice: 0,
-    frequency: 'monthly',
-  },
-  {
-    id: 2,
-    name: 'Quarterly',
-    price: 15,
-    description: 'Enjoy access to pro member features and unlimited chats for 3 months.',
-    discount: 25,
-    previousPrice: 20,
-    frequency: 'quarterly',
-  },
-  {
-    id: 3,
-    name: 'Yearly',
-    price: 7.5,
-    description:
-      'Get the best value for your money. Enjoy unlimited chats and pro member features for a year.',
-    discount: 63,
-    previousPrice: 20,
-    frequency: 'yearly',
-  },
-];
 
 export default function PricingPlans() {
   const subscription = useSelector(selectSubscription);
@@ -74,6 +41,7 @@ export default function PricingPlans() {
   const dispatch = useDispatch();
   const [createStripeSession] = useCreateStripeSessionMutation();
   const [cancelSubsciption, { isLoading }] = useCancelSubscriptionMutation();
+  const { refetch } = useGetFreeRequestsQuery(undefined, { skip: true });
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -84,7 +52,7 @@ export default function PricingPlans() {
       addNotification({
         id: new Date().getTime(),
         message:
-          "Payment successful. Thank you for subscribing. If you don't see the changes, please wait for a few moments and refresh the page.",
+          "Thank you for subscribing. If you don't see the changes, please wait for a few moments and refresh the page.",
         type: 'success',
       }),
     );
@@ -117,6 +85,7 @@ export default function PricingPlans() {
   const unsubscribe = async () => {
     try {
       await cancelSubsciption({ id: subscription.id ?? 0 }).unwrap();
+      refetch();
       dispatch(
         addNotification({
           id: new Date().getTime(),
@@ -135,11 +104,11 @@ export default function PricingPlans() {
   return (
     <ColumnBox minHeight='100%' gap={4} mt={5} pb={2} width='90%' margin='auto'>
       <Box>
-        <Typography textAlign='center' variant='h3'>
+        <Typography textAlign='center' variant='h3' fontSize={40} fontWeight={700} color='dark'>
           Pricing Plans
         </Typography>
         <Typography color='textSecondary' textAlign='center'>
-          Want to get more out of chatify? Subscribe to one of our plans
+          Want to get more out of Chatify? Subscribe to one of our plans
         </Typography>
       </Box>
       {subscription.is_active && (
@@ -169,7 +138,12 @@ export default function PricingPlans() {
               loading={isLoading}
               variant='outlined'
               onClick={() => unsubscribe()}
-              sx={{ marginLeft: 'auto', width: isMobile ? '100%' : 'fit-content' }}
+              sx={{
+                marginLeft: 'auto',
+                width: isMobile ? '100%' : 'fit-content',
+                borderWidth: '2px',
+                fontWeight: 700,
+              }}
             >
               Cancel Subsciption
             </Button>
@@ -183,6 +157,7 @@ export default function PricingPlans() {
         width='90%'
         flexWrap='wrap'
         maxWidth={1000}
+        flexDirection={isSmallerScreen ? 'column' : 'row'}
       >
         {subscriptionPlans.map((plan) => (
           <ColumnBox
@@ -193,7 +168,7 @@ export default function PricingPlans() {
             justifyContent='start'
             sx={{
               bgcolor:
-                plan.id == 2 && subscription.package.id != 2 ? '#002348' : 'background.paper',
+                plan.id == 2 && subscription.package.id != 2 ? '#ecf4ff' : 'background.paper',
             }}
             maxWidth={300}
             alignItems='start'
@@ -223,7 +198,7 @@ export default function PricingPlans() {
                 <Typography
                   color='secondary'
                   border='2px solid'
-                  borderColor='success.dark'
+                  borderColor='success.light'
                   borderRadius='20px'
                   padding='1px 4px 0px 6px'
                 >
@@ -254,7 +229,15 @@ export default function PricingPlans() {
                   createCheckout(plan.id);
                 }
               }}
-              sx={{ fontWeight: 700, fontSize: '1rem' }}
+              sx={{
+                fontWeight: 700,
+                fontSize: '1rem',
+                border: 'none',
+                backgroundColor: 'background.onPaper',
+                ':hover': {
+                  filter: 'brightness(90%)',
+                },
+              }}
             >
               {subscription.package?.id === plan.id
                 ? 'Current Plan'
@@ -266,6 +249,8 @@ export default function PricingPlans() {
           </ColumnBox>
         ))}
       </RowBox>
+      <ChatlyProComparison />
+      <FAQs />
     </ColumnBox>
   );
 }

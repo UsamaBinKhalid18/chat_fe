@@ -10,5 +10,5 @@ export const COLORS = {
       hover: '#171717',
     },
   },
-  sideBarIcon: '#999',
+  sideBarIcon: '#111',
 } as const;

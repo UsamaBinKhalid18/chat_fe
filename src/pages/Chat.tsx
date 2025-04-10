@@ -8,6 +8,7 @@ import { Box, CircularProgress, IconButton, styled, Typography } from '@mui/mate
 import { aiModels } from 'src/common/constants';
 import { utils } from 'src/common/utils';
 import ColumnBox from 'src/components/common/ColumnBox';
+import { IconMap } from 'src/components/common/IconsMap';
 import RowBox from 'src/components/common/RowBox';
 import Input from 'src/components/Input';
 import MarkdownRenderer from 'src/components/MarkdownRenderer';
@@ -108,7 +109,7 @@ export default function Chat() {
       newMessages[index - 1] = { ...newMessages[index - 1], model };
     }
     setMessages(newMessages);
-    startStreaming(newMessages);
+    startStreaming(newMessages, { modelName: model });
   };
 
   return (
@@ -138,21 +139,22 @@ export default function Chat() {
                   },
                 },
               }}
-              color='white'
             >
               {!message.isUser && (
-                <img
-                  src={aiModels.find((m) => m.name == message.model)?.iconUrl ?? ''}
-                  alt='AI'
-                  width='30px'
-                  height='30px'
-                  style={{
-                    marginTop: '8px',
-                    marginRight: '12px',
-                    borderRadius: '50%',
-                    border: '1px solid grey',
-                  }}
-                />
+                <>
+                  <img
+                    src={IconMap[aiModels.find((m) => m.model == message.model)?.icon ?? 'gemini']}
+                    alt='AI'
+                    width='30px'
+                    height='30px'
+                    style={{
+                      marginTop: '8px',
+                      marginRight: '12px',
+                      borderRadius: '50%',
+                      border: '1px solid grey',
+                    }}
+                  />
+                </>
               )}
 
               <ColumnBox alignItems='start' gap={1} maxWidth='100%'>
@@ -186,7 +188,7 @@ export default function Chat() {
                   alignSelf={message.isUser ? 'end' : 'start'}
                   padding={message.isUser ? '0 1rem' : 0}
                   borderRadius={4}
-                  sx={{ backgroundColor: message.isUser ? '#333' : 'secondary' }}
+                  sx={{ backgroundColor: message.isUser ? 'background.paper' : 'secondary' }}
                   maxWidth='100%'
                 >
                   <Box
@@ -218,7 +220,7 @@ export default function Chat() {
                           );
                         }}
                       >
-                        <ContentCopy htmlColor='#aaa' sx={{ height: '20px', width: '20px' }} />
+                        <ContentCopy htmlColor='#777' sx={{ height: '20px', width: '20px' }} />
                       </IconButton>
                       <IconButton
                         sx={{
@@ -228,7 +230,7 @@ export default function Chat() {
                         }}
                         onClick={() => streamFromIndex(index)}
                       >
-                        <Cached htmlColor='#aaa' sx={{ height: '22px', width: '22px' }} />
+                        <Cached htmlColor='#777' sx={{ height: '22px', width: '22px' }} />
                       </IconButton>
                       <ModelSelector
                         models={aiModels}

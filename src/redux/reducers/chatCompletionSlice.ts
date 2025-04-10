@@ -7,7 +7,7 @@ type ChatState = {
   model: string;
 };
 const initialState: ChatState = {
-  model: aiModels[0].name,
+  model: aiModels[0].model,
 };
 const chatCompletionSlice = createSlice({
   name: 'chatCompletion',

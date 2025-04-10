@@ -27,7 +27,6 @@ import {
 } from 'src/assets/images/svgs';
 import useResponsive from 'src/hooks/useResponsive';
 import { selectCurrentUser } from 'src/redux/reducers/authSlice';
-import { COLORS } from 'src/theme/colors';
 
 import ColumnBox from './common/ColumnBox';
 import RowBox from './common/RowBox';
@@ -36,9 +35,9 @@ import { SideBarItem } from './SideBarItem';
 import { UserMenu } from './UserMenu';
 
 const drawerWidth = 232;
-const commonStyles = (): CSSObject => ({
+const commonStyles = (theme: Theme): CSSObject => ({
   overflowX: 'hidden',
-  backgroundImage: `linear-gradient(to right, ${COLORS.gradient.start}, ${COLORS.gradient.end})`,
+  backgroundImage: theme.palette.gradient,
 });
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -48,7 +47,7 @@ const openedMixin = (theme: Theme): CSSObject => ({
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.enteringScreen,
   }),
-  ...commonStyles(),
+  ...commonStyles(theme),
 });
 
 const closedMixin = (theme: Theme): CSSObject => ({
@@ -60,7 +59,7 @@ const closedMixin = (theme: Theme): CSSObject => ({
   [theme.breakpoints.up('sm')]: {
     width: `calc(${theme.spacing(10)} + 1px)`,
   },
-  ...commonStyles(),
+  ...commonStyles(theme),
 });
 
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -74,7 +73,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 
 export const StyledIconButton = styled(IconButton)`
   &:hover {
-    background: ${COLORS.button.dark.hover};
+    background: ${({ theme }) => theme.palette.action.hover};
   }
   border-radius: 8px;
 `;
@@ -129,14 +128,13 @@ const UserContainer = styled(RowBox)`
   border-radius: 12px;
   cursor: pointer;
   user-select: none;
-  background-color: ${COLORS.button.dark.background};
+  background-color: ${({ theme }) => theme.palette.background.paper};
   margin: 16px;
   width: 100%;
   gap: 8px;
 `;
 
 const StartNewButton = styled(Button)`
-  color: white;
   width: 100%;
   border-radius: 12px;
   text-transform: none;
@@ -146,10 +144,10 @@ const StartNewButton = styled(Button)`
   padding: 8px 22px;
   min-height: 40px;
   margin-bottom: 6px;
+  border-color: 1px solid #333;
 `;
 
 const MenuSubtitle = styled(Typography)`
-  color: white;
   margin-top: 24px;
   margin-bottom: 6px;
   font-size: 13px;
@@ -175,19 +173,19 @@ const menuItems: MenuType[] = [
     title: 'Tools',
     items: [
       {
-        icon: <ChatSVG color='#b2b2b2' />,
+        icon: <ChatSVG color='#777' />,
         title: 'AI Chat',
         navigationUrl: '/',
         isActive: () => window.location.pathname === '/' || window.location.pathname === '/chat',
         collapsedTitle: 'Chat',
       },
       {
-        icon: <ImageSVG color='#b2b2b2' />,
+        icon: <ImageSVG color='#777' />,
         title: 'Image Generation',
         collapsedTitle: 'Image',
       },
       {
-        icon: <SearchSVG color='#b2b2b2' />,
+        icon: <SearchSVG color='#777' />,
         title: 'AI Search Engine',
         collapsedTitle: 'Search',
       },
@@ -197,17 +195,17 @@ const menuItems: MenuType[] = [
     title: 'Others',
     items: [
       {
-        icon: <TeamsSVG color='#b2b2b2' />,
+        icon: <TeamsSVG color='#777' />,
         title: 'Invite Team',
         collapsedTitle: 'Teams',
       },
       {
-        icon: <SupportSVG color='#b2b2b2' />,
+        icon: <SupportSVG color='#777' />,
         title: 'Support',
         navigationUrl: '/support',
       },
       {
-        icon: <PricingSVG color='#b2b2b2' />,
+        icon: <PricingSVG color='#777' />,
         title: 'Pricing Plans',
         collapsedTitle: 'Pricing',
         navigationUrl: '/pricing',
@@ -263,12 +261,12 @@ export default function SideBar({
           <img src={IMAGES.logoGreen} style={{ maxWidth: 30, maxHeight: 30 }} />
           {open && (
             <>
-              <Typography fontSize={16} fontWeight={500} color='white'>
+              <Typography fontSize={16} fontWeight={500}>
                 Chatify
               </Typography>
 
               <StyledIconButton onClick={() => setOpen(false)} sx={{ marginLeft: 'auto' }}>
-                <Collapse htmlColor='#dadada' sx={{ rotate: '180deg' }} />
+                <Collapse sx={{ rotate: '180deg' }} />
               </StyledIconButton>
             </>
           )}
@@ -279,16 +277,13 @@ export default function SideBar({
             sx={{
               border: open ? 'default' : 'none',
               flexDirection: open ? 'row' : 'column',
-              '&:hover': {
-                backgroundColor: COLORS.button.dark.hover,
-              },
             }}
             onClick={() => {
               navigate('/');
               if (isSmallerScreen) setOpen(false);
             }}
           >
-            <Add htmlColor={COLORS.sideBarIcon} sx={{ height: 20, width: 20 }} />
+            <Add htmlColor='#777' sx={{ height: 20, width: 20 }} />
             <Typography fontWeight={500} fontSize={open ? 14 : 12}>
               {open ? 'Start New' : 'New'}
             </Typography>
@@ -301,10 +296,7 @@ export default function SideBar({
                     {menu.title}
                   </MenuSubtitle>
                 ) : (
-                  <Divider
-                    key={menu.title}
-                    sx={{ width: '58px', margin: '4px', borderColor: 'white' }}
-                  />
+                  <Divider key={menu.title} sx={{ width: '58px', margin: '4px' }} />
                 )}
                 {menu.items.map((item) => (
                   <SideBarItem
@@ -349,12 +341,12 @@ export default function SideBar({
                 />
                 {open && (
                   <>
-                    <Typography variant='body2' color='white'>
+                    <Typography variant='body2'>
                       {user.first_name ? `${user.first_name} ${user.last_name}` : user.email}
                     </Typography>
 
                     <FooterIconButton open={isFooterMenuOpen}>
-                      <KeyboardArrowDown htmlColor='white' />
+                      <KeyboardArrowDown />
                     </FooterIconButton>
                   </>
                 )}

@@ -71,6 +71,6 @@ const baseQueryWithRefresh: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQu
 
 export const api = createApi({
   baseQuery: baseQueryWithRefresh,
-  tagTypes: [],
+  tagTypes: ['freeRequests'],
   endpoints: () => ({}),
 });

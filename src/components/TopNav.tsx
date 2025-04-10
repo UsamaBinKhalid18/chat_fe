@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 
 import { Start as Expand } from '@mui/icons-material';
 import { Box, Button, styled, Typography } from '@mui/material';
@@ -22,6 +23,7 @@ const NavBar = styled(Box)`
   display: flex;
   align-items: center;
   gap: 8px;
+  z-index: 10;
 `;
 
 export default function TopNav({
@@ -34,21 +36,24 @@ export default function TopNav({
   const model = useSelector(selectModel);
   const authModalOpen = useSelector(selectLoginModal);
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const user = useSelector(selectCurrentUser);
-
+  const isHomeOrChat = location.pathname === '/' || location.pathname === '/chat';
   return (
     <NavBar>
       {!barOpen && (
         <StyledIconButton onClick={() => setBarOpen(true)}>
-          <Expand htmlColor='white' />
+          <Expand />
         </StyledIconButton>
       )}
-      <ModelSelector
-        models={aiModels}
-        activeModel={model}
-        onChange={(model) => dispatch(setModel(model))}
-      />
+      {isHomeOrChat && (
+        <ModelSelector
+          models={aiModels}
+          activeModel={model}
+          onChange={(model) => dispatch(setModel(model))}
+        />
+      )}
       {!user && (
         <>
           <Button
