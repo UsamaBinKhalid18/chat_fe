@@ -8,7 +8,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { Box, IconButton, Typography } from '@mui/material';
 
 // @ts-expect-error unsupported types
-import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { solarizedlight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 import RowBox from './common/RowBox';
 
@@ -31,7 +31,7 @@ const CodeBlock: React.FC<{ inline?: boolean; className?: string; children?: Rea
       <Typography
         component='code'
         sx={{
-          backgroundColor: '#353535',
+          backgroundColor: '#FDF6E3',
           padding: '2px 4px',
           borderRadius: '4px',
           fontFamily: 'monospace',
@@ -81,7 +81,7 @@ const CodeBlock: React.FC<{ inline?: boolean; className?: string; children?: Rea
         )}
       </Box>
       <SyntaxHighlighter
-        style={oneDark}
+        style={solarizedlight}
         language={language}
         PreTag='div'
         customStyle={{

@@ -17,7 +17,7 @@ import { selectCurrentUser } from 'src/redux/reducers/authSlice';
 import { addNotification, setLoginModal } from 'src/redux/reducers/notificationSlice';
 import { selectSubscription } from 'src/redux/reducers/subscriptionSlice';
 
-import ChatlyProComparison from './Comparison';
+import ChatifyProComparison from './Comparison';
 import FAQs from './FAQs';
 
 interface StatusProps {
@@ -249,7 +249,7 @@ export default function PricingPlans() {
           </ColumnBox>
         ))}
       </RowBox>
-      <ChatlyProComparison />
+      <ChatifyProComparison />
       <FAQs />
     </ColumnBox>
   );

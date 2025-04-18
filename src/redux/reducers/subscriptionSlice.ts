@@ -32,6 +32,9 @@ const subscriptionSlice = createSlice({
       .addMatcher(paymentsApi.endpoints.getSubscription.matchFulfilled, (state, action) => {
         return { ...state, ...action.payload, free_requests: state.free_requests };
       })
+      .addMatcher(paymentsApi.endpoints.getSubscription.matchRejected, () => {
+        return initialState;
+      })
       .addMatcher(paymentsApi.endpoints.cancelSubscription.matchFulfilled, (state) => {
         return { ...initialState, free_requests: state.free_requests };
       })

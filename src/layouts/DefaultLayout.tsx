@@ -30,9 +30,7 @@ export default function DefaultLayout() {
   }, [isError]);
 
   useEffect(() => {
-    if (user) {
-      refetch();
-    }
+    refetch();
   }, [user, refetch, subscription.id]);
 
   useEffect(() => {

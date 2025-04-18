@@ -222,7 +222,7 @@ export default function Input({
       alignItems='start'
     >
       {(file || uploading) && <FileBox file={file} removeFile={removeFile} />}
-      <RowBox width={'100%'} gap={2}>
+      <RowBox width={'100%'} gap={2} alignItems={'end'}>
         <input
           type='file'
           id='file'
@@ -248,6 +248,13 @@ export default function Input({
           variant='outlined'
           autoComplete='off'
           autoFocus
+          multiline
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault();
+              formik.handleSubmit();
+            }
+          }}
           placeholder={isChat ? '' : 'Type your message ...'}
           fullWidth
           {...formik.getFieldProps('message')}
@@ -256,6 +263,7 @@ export default function Input({
             htmlInput: { style: { padding: '0px' } },
           }}
           sx={{
+            alignSelf: 'center',
             '& .MuiOutlinedInput-root': {
               '& fieldset': {
                 border: 'none',
@@ -270,7 +278,7 @@ export default function Input({
           sx={{
             width: 32,
             height: 32,
-            backgroundColor: 'background.dark',
+            backgroundColor: 'dark',
             '&:disabled': {
               backgroundColor: 'lightgrey',
             },

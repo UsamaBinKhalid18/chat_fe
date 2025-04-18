@@ -1,3 +1,5 @@
+import { FormatListBulleted } from '@mui/icons-material';
+
 import {
   AdviceSVG,
   AnalyzeDataSVG,
@@ -5,7 +7,6 @@ import {
   BrainstormSVG,
   CodeSVG,
   ProcessDocSVG,
-  WebSearchSVG,
   WriteSVG,
 } from 'src/assets/images/svgs';
 
@@ -83,10 +84,16 @@ export const autoFills: autoFillType[] = [
     startingText: 'Brainstorm ideas for',
     options: ['a project', 'a task', 'a presentation', 'a report', 'an event'],
   },
+  // {
+  //   name: 'Web search',
+  //   icon: <WebSearchSVG />,
+  //   startingText: 'Search the web for',
+  //   options: ['information', 'images', 'videos', 'articles', 'news'],
+  // },
   {
-    name: 'Web search',
-    icon: <WebSearchSVG />,
-    startingText: 'Search the web for',
-    options: ['information', 'images', 'videos', 'articles', 'news'],
+    name: 'Plan',
+    icon: <FormatListBulleted />,
+    startingText: 'Plan a',
+    options: ['trip', 'project', 'event', 'meeting', 'task'],
   },
 ];

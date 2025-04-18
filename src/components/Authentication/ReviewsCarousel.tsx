@@ -22,7 +22,7 @@ const reviews: Review[] = [
   {
     id: '1',
     heading: 'Exactly what I needed',
-    content: `Having the best AI models in one place with Chatly has streamlined our whole AI workflow. No more tab switching. It's exactly what our team needed!`,
+    content: `Having the best AI models in one place with Chatify has streamlined our whole AI workflow. No more tab switching. It's exactly what our team needed!`,
     rating: 5,
     author: 'David Miller',
     designation: 'Product Manager',
@@ -40,7 +40,7 @@ const reviews: Review[] = [
   {
     id: '3',
     heading: 'Best AI Assistant',
-    content: `Chatly has been a lifesaver for my content needs. The AI creates amazing visuals and marketing copy that actually sounds human - it's cut my work time in half.`,
+    content: `Chatify has been a lifesaver for my content needs. The AI creates amazing visuals and marketing copy that actually sounds human - it's cut my work time in half.`,
     rating: 5,
     author: 'Sara Williams',
     designation: 'Marketing Specialist',

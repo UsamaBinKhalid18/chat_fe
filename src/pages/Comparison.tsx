@@ -9,7 +9,7 @@ const features: {
   title: string;
   rows: {
     name: string;
-    chatly: boolean | string;
+    chatify: boolean | string;
     competitor: boolean | string;
     icon?: string;
   }[];
@@ -19,25 +19,25 @@ const features: {
     rows: [
       {
         name: 'OpenAI GPT-4o',
-        chatly: true,
+        chatify: true,
         competitor: true,
         icon: IMAGES.gpt,
       },
       {
         name: 'OpenAI GPT-4o-mini',
-        chatly: true,
+        chatify: true,
         competitor: true,
         icon: IMAGES.gpt,
       },
       {
         name: 'Google Gemini 2.0 Flash',
-        chatly: true,
+        chatify: true,
         competitor: false,
         icon: IMAGES.gemini,
       },
       {
         name: 'Anthropic Claude 3.7 Sonnet',
-        chatly: true,
+        chatify: true,
         competitor: false,
         icon: IMAGES.claude,
       },
@@ -46,17 +46,17 @@ const features: {
   {
     title: 'AI Chat',
     rows: [
-      { name: 'Chat with links', chatly: 'Advanced', competitor: 'Limited' },
-      { name: 'Chat with documents', chatly: 'Advanced', competitor: 'Limited' },
-      { name: 'Analyze data', chatly: 'Advanced', competitor: 'Limited' },
-      { name: 'Chat with image', chatly: true, competitor: true },
+      { name: 'Chat with links', chatify: 'Advanced', competitor: 'Limited' },
+      { name: 'Chat with documents', chatify: 'Advanced', competitor: 'Limited' },
+      { name: 'Analyze data', chatify: 'Advanced', competitor: 'Limited' },
+      { name: 'Chat with image', chatify: true, competitor: true },
     ],
   },
   {
     title: 'AI Tools',
     rows: [
-      { name: 'Image Generation', chatly: 'Coming soon', competitor: 'Limited' },
-      { name: 'AI Search Engine', chatly: 'Coming soon', competitor: false },
+      { name: 'Image Generation', chatify: 'Coming soon', competitor: 'Limited' },
+      { name: 'AI Search Engine', chatify: 'Coming soon', competitor: false },
     ],
   },
 ];
@@ -71,12 +71,12 @@ const iconMapper = (value: boolean | string, color?: string) => {
   );
 };
 
-export default function ChatlyProComparison() {
+export default function ChatifyProComparison() {
   return (
     <Box mt={11} display='flex' flexDirection='column' alignItems='center' gap={5} width='90%'>
       <Stack alignItems='center' gap={1}>
         <Typography variant='h4' color='primary' fontWeight='bold' textAlign='center'>
-          Why go Pro with Chatly?
+          Why go Pro with Chatify?
         </Typography>
         <Typography variant='body2' color='text.secondary'>
           Multiple productivity needs, one solution
@@ -93,7 +93,7 @@ export default function ChatlyProComparison() {
           <Grid item xs={4} display='flex' justifyContent='center' alignItems='center' gap={1}>
             <img src={IMAGES.logoLight} width={34} />
             <Typography fontWeight={600} color='primary' textAlign='center'>
-              Chatly
+              Chatify
             </Typography>
           </Grid>
           <Grid item xs={4} display='flex' justifyContent='center' alignItems='center' gap={1}>
@@ -121,7 +121,7 @@ export default function ChatlyProComparison() {
                     </Typography>
                   </Grid>
                   <Grid item xs={4} textAlign='center'>
-                    {iconMapper(row.chatly, '#007bff')}
+                    {iconMapper(row.chatify, '#007bff')}
                   </Grid>
                   <Grid item xs={4} textAlign='center'>
                     {iconMapper(row.competitor)}

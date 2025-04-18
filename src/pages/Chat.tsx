@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { Cached, ContentCopy, InsertDriveFile } from '@mui/icons-material';
+import { Cached, ContentCopy, InsertDriveFile, Edit as EditIcon } from '@mui/icons-material';
 import { Box, CircularProgress, IconButton, styled, Typography } from '@mui/material';
 
 import { aiModels } from 'src/common/constants';
@@ -10,6 +10,7 @@ import { utils } from 'src/common/utils';
 import ColumnBox from 'src/components/common/ColumnBox';
 import { IconMap } from 'src/components/common/IconsMap';
 import RowBox from 'src/components/common/RowBox';
+import Edit from 'src/components/Edit';
 import Input from 'src/components/Input';
 import MarkdownRenderer from 'src/components/MarkdownRenderer';
 import ModelSelector from 'src/components/ModelSelector';
@@ -62,6 +63,8 @@ export default function Chat() {
   const model = useSelector(selectModel);
   const navigate = useNavigate();
   const { isMobile } = useResponsive();
+  const [editMessageIndex, setEditMessageIndex] = useState<number | null>(null);
+  const [editMessage, setEditMessage] = useState<string>('');
 
   const [messages, setMessages] = useState<Message[]>(
     initialMessage
@@ -82,6 +85,11 @@ export default function Chat() {
     startStreaming([{ text: initialMessage, isUser: true, model, fileId, fileUrl, fileName }]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const clearEdit = () => {
+    setEditMessageIndex(null);
+    setEditMessage('');
+  };
 
   useEffect(() => {
     setMessages((messages) => {
@@ -140,7 +148,26 @@ export default function Chat() {
                 },
               }}
             >
-              {!message.isUser && (
+              {message.isUser ? (
+                editMessageIndex !== index && (
+                  <IconButton
+                    sx={{
+                      ':hover': { backgroundColor: 'transparent' },
+                      maxWidth: '22px',
+                      maxHeight: '22px',
+                      alignSelf: 'end',
+                      mb: 1,
+                      mr: 1,
+                    }}
+                    onClick={() => {
+                      setEditMessageIndex(index);
+                      setEditMessage(message.text);
+                    }}
+                  >
+                    <EditIcon htmlColor='#777' sx={{ height: '22px', width: '22px' }} />
+                  </IconButton>
+                )
+              ) : (
                 <>
                   <img
                     src={IconMap[aiModels.find((m) => m.model == message.model)?.icon ?? 'gemini']}
@@ -188,15 +215,35 @@ export default function Chat() {
                   alignSelf={message.isUser ? 'end' : 'start'}
                   padding={message.isUser ? '0 1rem' : 0}
                   borderRadius={4}
-                  sx={{ backgroundColor: message.isUser ? 'background.paper' : 'secondary' }}
-                  maxWidth='100%'
+                  sx={{
+                    backgroundColor: message.isUser ? 'background.paper' : 'secondary',
+                    ...(message.isUser && {
+                      width: '450px',
+                      minWidth: '100%',
+                    }),
+                  }}
                 >
-                  <Box
-                    mt={
-                      message.text.startsWith('##') ? -2.5 : message.text.startsWith('```') ? -1 : 0
-                    }
-                  >
-                    <MarkdownRenderer content={message.text} />
+                  <Box>
+                    {editMessageIndex == index ? (
+                      <Edit
+                        text={editMessage}
+                        onChange={(text) => setEditMessage(text)}
+                        onCancel={clearEdit}
+                        onSubmit={() => {
+                          const newMessages = messages.slice(0, index);
+                          newMessages.push({
+                            text: editMessage,
+                            isUser: true,
+                            model: message.model,
+                          });
+                          startStreaming(newMessages);
+                          setMessages(newMessages);
+                          clearEdit();
+                        }}
+                      />
+                    ) : (
+                      <MarkdownRenderer content={message.text} />
+                    )}
                   </Box>
                   {isLoading && !message.isUser && index == messages.length - 1 && (
                     <CircularProgress size={20} sx={{ margin: message.text ? 0 : 1.75 }} />
@@ -254,6 +301,7 @@ export default function Chat() {
               ...messages,
               { text: message, fileId, isUser: true, model, fileUrl, fileName },
             ]);
+            clearEdit();
           }}
           isChat={true}
           isStreaming={isLoading}

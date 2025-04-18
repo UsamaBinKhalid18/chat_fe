@@ -81,7 +81,7 @@ const ModelSelector: React.FC<ModelSelectorProps> = ({
                 {model.description}
               </Typography>
             </ColumnBox>
-            {model.isPro && (
+            {model.isPro && !subscription.id && (
               <Typography
                 fontSize={12}
                 fontWeight={500}
