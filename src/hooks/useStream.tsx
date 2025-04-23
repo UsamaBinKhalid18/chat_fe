@@ -39,7 +39,6 @@ const useStream = (url: string) => {
     if (isStreaming.current) return; // Prevent double execution
     isStreaming.current = true;
     abortController.current = new AbortController(); // Create a new AbortController
-
     setData('');
     setIsLoading(true);
 
@@ -68,7 +67,7 @@ const useStream = (url: string) => {
         if (refreshResponse.status === 200) {
           const { access } = await refreshResponse.json();
           dispatch(updateAccessToken({ access, refresh: refreshToken }));
-          setTimeout(() => startStreaming(messages, access), 0);
+          setTimeout(() => startStreaming(messages, { token: access }), 0);
         } else {
           dispatch(logOut());
           dispatch(

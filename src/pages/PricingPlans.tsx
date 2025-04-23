@@ -233,9 +233,10 @@ export default function PricingPlans() {
                 fontWeight: 700,
                 fontSize: '1rem',
                 border: 'none',
-                backgroundColor: 'background.onPaper',
+                backgroundColor: plan.id == 2 ? '#007bff' : 'primary.contrastText',
+                color: plan.id == 2 ? 'white' : 'primary.main',
                 ':hover': {
-                  filter: 'brightness(90%)',
+                  filter: 'brightness(85%)',
                 },
               }}
             >

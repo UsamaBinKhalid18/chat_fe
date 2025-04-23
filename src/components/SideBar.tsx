@@ -258,17 +258,18 @@ export default function SideBar({
         }}
       >
         <DrawerHeader>
-          <img src={IMAGES.logoGreen} style={{ maxWidth: 30, maxHeight: 30 }} />
-          {open && (
-            <>
+          <RowBox gap={1} onClick={() => navigate('/')} sx={{ cursor: 'pointer' }}>
+            <img src={IMAGES.logoGreen} style={{ maxWidth: 30, maxHeight: 30 }} />
+            {open && (
               <Typography fontSize={16} fontWeight={500}>
                 Chatify
               </Typography>
-
-              <StyledIconButton onClick={() => setOpen(false)} sx={{ marginLeft: 'auto' }}>
-                <Collapse sx={{ rotate: '180deg' }} />
-              </StyledIconButton>
-            </>
+            )}
+          </RowBox>
+          {open && (
+            <StyledIconButton onClick={() => setOpen(false)} sx={{ marginLeft: 'auto' }}>
+              <Collapse sx={{ rotate: '180deg' }} />
+            </StyledIconButton>
           )}
         </DrawerHeader>
         <Box margin={open ? '12px' : '8px'} mt={1}>

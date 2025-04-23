@@ -13,6 +13,7 @@ import useResponsive from 'src/hooks/useResponsive';
 import UpgradePlan from 'src/pages/UpgradePlan';
 import { selectCurrentUser } from 'src/redux/reducers/authSlice';
 import { selectSubscription } from 'src/redux/reducers/subscriptionSlice';
+import { ref } from 'yup';
 
 export default function DefaultLayout() {
   const { isSmallerScreen } = useResponsive();
@@ -21,22 +22,24 @@ export default function DefaultLayout() {
   const user = useSelector(selectCurrentUser);
   const subscription = useSelector(selectSubscription);
   const [shouldFetchFallback, setShouldFetchFallback] = useState(false);
-  useGetFreeRequestsQuery(undefined, { skip: !shouldFetchFallback });
+  const { refetch: refetchFreeRequests } = useGetFreeRequestsQuery(undefined, {
+    skip: !shouldFetchFallback,
+  });
 
   useEffect(() => {
     if (isError) {
-      setShouldFetchFallback(true);
+      if (shouldFetchFallback) {
+        refetchFreeRequests();
+      } else {
+        setShouldFetchFallback(true);
+      }
     }
-  }, [isError]);
+  }, [isError, refetchFreeRequests, shouldFetchFallback]);
 
   useEffect(() => {
     refetch();
   }, [user, refetch, subscription.id]);
 
-  useEffect(() => {
-    if (isError) {
-    }
-  }, [isError]);
   return (
     <Box display='flex' minHeight='100vh'>
       <SnackbarQueue />

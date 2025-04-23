@@ -198,7 +198,7 @@ export default function Chat() {
                   ) : (
                     <RowBox
                       sx={{
-                        backgroundColor: 'success.dark',
+                        backgroundColor: 'success',
                         color: 'white',
                         fontSize: 12,
                         paddingX: 1,
@@ -217,10 +217,13 @@ export default function Chat() {
                   borderRadius={4}
                   sx={{
                     backgroundColor: message.isUser ? 'background.paper' : 'secondary',
-                    ...(message.isUser && {
-                      width: '450px',
-                      minWidth: '100%',
-                    }),
+                    overflowX: 'auto', // 👈 add this
+                    maxWidth: '100%', // 👈 prevent expansion
+                    ...(message.isUser &&
+                      editMessageIndex == index && {
+                        width: '450px',
+                        minWidth: '100%',
+                      }),
                   }}
                 >
                   <Box>

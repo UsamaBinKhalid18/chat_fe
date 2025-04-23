@@ -45,7 +45,9 @@ const style = (isSmallerScreen: boolean) => ({
 });
 
 export default function UpgradePlan() {
-  const isSmallerScreen = useMediaQuery('(max-width:1100px)');
+  const isSmallerWidth = useMediaQuery('(max-width:1100px)');
+  const isSmallerHeight = useMediaQuery('(max-height: 720px)');
+  const isSmallerScreen = isSmallerWidth || isSmallerHeight;
   const [plan, setPlan] = useState(2);
   const [createStripeSession] = useCreateStripeSessionMutation();
   const open = useSelector(selectUpgradePlanModal);
@@ -184,8 +186,10 @@ const TogglePlans = ({ value, onChange }: { value: number; onChange: (id: number
                 )}
               </RowBox>
               <Typography textAlign='start' color='text.disabled' fontSize={14} fontWeight='bold'>
-                {plan.price *
-                  (plan.frequency == 'monthly' ? 1 : plan.frequency == 'quarterly' ? 3 : 12)}{' '}
+                {Math.ceil(
+                  plan.price *
+                    (plan.frequency == 'monthly' ? 1 : plan.frequency == 'quarterly' ? 3 : 12),
+                )}{' '}
                 USD/{plan.per}
               </Typography>
             </ColumnBox>

@@ -47,13 +47,13 @@ export const aiModels: AIModelType[] = [
     description: `OpenAI's efficient reasoning model`,
     isPro: true,
   },
-  {
-    name: 'OpenAI GPT o3-mini (High)',
-    icon: 'gpt',
-    model: 'gpt-o3-mini-high',
-    description: `OpenAI's best reasoning model`,
-    isPro: true,
-  },
+  // {
+  //   name: 'OpenAI GPT o3-mini (High)',
+  //   icon: 'gpt',
+  //   model: 'gpt-o3-mini-high',
+  //   description: `OpenAI's best reasoning model`,
+  //   isPro: true,
+  // },
   {
     name: 'DeepSeek R1',
     icon: 'deepseek',
@@ -101,9 +101,9 @@ export const subscriptionPlans: SubscriptionPlan[] = [
   {
     id: 2,
     name: 'Pro Quarterly',
-    price: 15,
+    price: 14,
     description: 'Enjoy access to pro member features and unlimited chats for 3 months.',
-    discount: 25,
+    discount: 30,
     previousPrice: 20,
     frequency: 'quarterly',
     per: 'quarter',
@@ -111,10 +111,10 @@ export const subscriptionPlans: SubscriptionPlan[] = [
   {
     id: 3,
     name: 'Pro Yearly',
-    price: 7.5,
+    price: 7.08,
     description:
       'Get the best value for your money. Enjoy unlimited chats and pro member features for a year.',
-    discount: 63,
+    discount: 69,
     previousPrice: 20,
     frequency: 'yearly',
     per: 'year',

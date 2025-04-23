@@ -240,7 +240,12 @@ export default function Input({
           }}
           onChange={handleFileChange}
         />
-        <IconButton sx={{ width: 32, height: 32 }} component='label' htmlFor='file'>
+        <IconButton
+          sx={{ width: 32, height: 32 }}
+          component='label'
+          htmlFor='file'
+          disabled={isStreaming}
+        >
           <Attachment />
         </IconButton>
         <TextField

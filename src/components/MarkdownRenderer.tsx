@@ -43,7 +43,14 @@ const CodeBlock: React.FC<{ inline?: boolean; className?: string; children?: Rea
   }
 
   return (
-    <Box sx={{ position: 'relative', mb: 2, minWidth: '100%' }}>
+    <Box
+      sx={{
+        position: 'relative',
+        mb: 2,
+        minWidth: '100%',
+        borderRadius: 2,
+      }}
+    >
       <Box
         sx={{
           display: 'flex',
@@ -80,20 +87,32 @@ const CodeBlock: React.FC<{ inline?: boolean; className?: string; children?: Rea
           </IconButton>
         )}
       </Box>
-      <SyntaxHighlighter
-        style={solarizedlight}
-        language={language}
-        PreTag='div'
-        customStyle={{
-          fontSize: 14,
-          margin: 0,
-          borderRadius: 0,
+      <Box
+        sx={{
+          overflowX: 'auto',
+          backgroundColor: '#fdf6e3',
           borderBottomLeftRadius: 8,
           borderBottomRightRadius: 8,
         }}
       >
-        {code}
-      </SyntaxHighlighter>
+        <SyntaxHighlighter
+          style={solarizedlight}
+          language={language}
+          PreTag='div'
+          customStyle={{
+            fontSize: 14,
+            margin: 0,
+            borderRadius: 0,
+            borderBottomLeftRadius: 8,
+            borderBottomRightRadius: 8,
+            display: 'inline-block',
+            minWidth: '100%',
+            whiteSpace: 'pre',
+          }}
+        >
+          {code}
+        </SyntaxHighlighter>
+      </Box>
     </Box>
   );
 };

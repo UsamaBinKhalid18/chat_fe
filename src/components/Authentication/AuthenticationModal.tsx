@@ -39,7 +39,9 @@ const style = {
 
 export default function AuthenticationModal({ open, handleClose }: AuthenticationModalProps) {
   const [backendError, setBackendError] = useState<string>('');
-  const isSmallerScreen = useMediaQuery('(max-width:1100px)');
+  const isSmallWidth = useMediaQuery('(max-width:1100px)');
+  const isSmallHeight = useMediaQuery('(max-height: 720px)');
+  const isSmallerScreen = isSmallWidth || isSmallHeight;
   const [isSignup, setIsSignup] = useState(false);
   const [googleLogin] = useGoogleLoginMutation();
   const [isLoading, setIsLoading] = useState(false);
