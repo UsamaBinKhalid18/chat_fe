@@ -1,10 +1,12 @@
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 
-import { Start as Expand } from '@mui/icons-material';
-import { Box, Button, styled, Typography } from '@mui/material';
+import { ElectricBolt, Start as Expand } from '@mui/icons-material';
+import { Box, Button, IconButton, styled, Typography } from '@mui/material';
 
 import { aiModels } from 'src/common/constants';
+import useResponsive from 'src/hooks/useResponsive';
 import { selectCurrentUser } from 'src/redux/reducers/authSlice';
 import { selectModel, setModel } from 'src/redux/reducers/chatCompletionSlice';
 import { selectLoginModal, setLoginModal } from 'src/redux/reducers/notificationSlice';
@@ -12,6 +14,7 @@ import { selectLoginModal, setLoginModal } from 'src/redux/reducers/notification
 import AuthenticationModal from './Authentication/AuthenticationModal';
 import ModelSelector from './ModelSelector';
 import { StyledIconButton } from './SideBar';
+import { UsageMenu } from './UsageMenu';
 const NavBar = styled(Box)`
   position: sticky;
   top: 0;
@@ -35,8 +38,20 @@ export default function TopNav({
 }) {
   const model = useSelector(selectModel);
   const authModalOpen = useSelector(selectLoginModal);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const { isMobile } = useResponsive();
   const dispatch = useDispatch();
   const location = useLocation();
+
+  const handleUsageClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    setAnchorEl(event.currentTarget);
+    event.stopPropagation();
+  };
+
+  const handleUsageClose = (e: MouseEvent | TouchEvent | React.MouseEvent) => {
+    setAnchorEl(null);
+    e.stopPropagation();
+  };
 
   const user = useSelector(selectCurrentUser);
   const isHomeOrChat = location.pathname === '/' || location.pathname === '/chat';
@@ -76,6 +91,31 @@ export default function TopNav({
             open={authModalOpen}
             handleClose={() => dispatch(setLoginModal(false))}
           />
+        </>
+      )}
+      {user && (
+        <>
+          {isMobile ? (
+            <IconButton sx={{ marginLeft: 'auto' }} onClick={handleUsageClick}>
+              <ElectricBolt htmlColor='black' />
+            </IconButton>
+          ) : (
+            <Button
+              startIcon={<ElectricBolt />}
+              sx={{
+                marginLeft: 'auto',
+                borderRadius: '50px',
+                px: 2,
+                '&:hover': {
+                  backgroundColor: '#ebebeb',
+                },
+              }}
+              onClick={handleUsageClick}
+            >
+              Usage
+            </Button>
+          )}
+          <UsageMenu anchorEl={anchorEl} handleClose={handleUsageClose} />
         </>
       )}
     </NavBar>

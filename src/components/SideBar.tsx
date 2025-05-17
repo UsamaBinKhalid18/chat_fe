@@ -233,6 +233,7 @@ export default function SideBar({
     if (isSmallerScreen) {
       setOpen(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
