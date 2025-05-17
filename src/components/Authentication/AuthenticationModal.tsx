@@ -8,6 +8,7 @@ import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import { useGoogleLoginMutation } from 'src/apis/authApi';
 import { StarSVG } from 'src/assets/images/svgs';
 import { utils } from 'src/common/utils';
+import useResponsive from 'src/hooks/useResponsive';
 
 import Login from './Login';
 import Signup from './Signup';
@@ -41,7 +42,8 @@ export default function AuthenticationModal({ open, handleClose }: Authenticatio
   const [backendError, setBackendError] = useState<string>('');
   const isSmallWidth = useMediaQuery('(max-width:1100px)');
   const isSmallHeight = useMediaQuery('(max-height: 720px)');
-  const isSmallerScreen = isSmallWidth || isSmallHeight;
+  const { isSmallerScreen } = useResponsive();
+  const scaleDown = !isSmallerScreen && (isSmallWidth || isSmallHeight);
   const [isSignup, setIsSignup] = useState(false);
   const [googleLogin] = useGoogleLoginMutation();
   const [isLoading, setIsLoading] = useState(false);
@@ -73,7 +75,7 @@ export default function AuthenticationModal({ open, handleClose }: Authenticatio
       >
         <LoaderWithBackdrop isLoading={isLoading} />
 
-        <RowBox alignItems='stretch'>
+        <RowBox alignItems='stretch' sx={{ scale: scaleDown ? '0.8' : '1' }}>
           {!isSmallerScreen && (
             <ColumnBox
               flex={1}

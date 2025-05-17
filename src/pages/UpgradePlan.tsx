@@ -1,6 +1,6 @@
 // import { Box, Modal } from '@mui/material';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Close } from '@mui/icons-material';
@@ -27,6 +27,8 @@ import { SafePaymentSVG } from 'src/assets/images/svgs';
 import { subscriptionPlans } from 'src/common/constants';
 import ColumnBox from 'src/components/common/ColumnBox';
 import RowBox from 'src/components/common/RowBox';
+import useResponsive from 'src/hooks/useResponsive';
+import { setModel } from 'src/redux/reducers/chatCompletionSlice';
 import {
   addNotification,
   selectUpgradePlanModal,
@@ -47,11 +49,18 @@ const style = (isSmallerScreen: boolean) => ({
 export default function UpgradePlan() {
   const isSmallerWidth = useMediaQuery('(max-width:1100px)');
   const isSmallerHeight = useMediaQuery('(max-height: 720px)');
-  const isSmallerScreen = isSmallerWidth || isSmallerHeight;
+  const { isSmallerScreen } = useResponsive();
+
+  const scaleDown = !isSmallerScreen && (isSmallerWidth || isSmallerHeight);
   const [plan, setPlan] = useState(2);
+  const dispatch = useDispatch();
   const [createStripeSession] = useCreateStripeSessionMutation();
   const open = useSelector(selectUpgradePlanModal);
-  const dispatch = useDispatch();
+  useEffect(() => {
+    if (open) {
+      dispatch(setModel('gemini'));
+    }
+  }, [open, dispatch]);
   const [loading, setLoading] = useState(false);
   const handleClick = async () => {
     try {
@@ -73,7 +82,7 @@ export default function UpgradePlan() {
   };
   return (
     <Modal open={open} onClose={handleClose} sx={{ overflow: 'scroll' }}>
-      <Box sx={style(isSmallerScreen)}>
+      <Box sx={{ ...style(isSmallerScreen) }}>
         <RowBox
           sx={{
             backgroundColor: 'white',
@@ -81,6 +90,7 @@ export default function UpgradePlan() {
             borderRadius: isSmallerScreen ? 0 : '24px',
             m: isSmallerScreen ? 0 : 2,
             flexDirection: isSmallerScreen ? 'column-reverse' : 'row',
+            scale: scaleDown ? '0.8' : '1',
           }}
         >
           <ColumnBox

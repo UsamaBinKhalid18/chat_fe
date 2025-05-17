@@ -15,6 +15,7 @@ type autoFillType = {
   name: string;
   startingText: string;
   options: string[];
+  isPro?: boolean;
 };
 
 export const autoFills: autoFillType[] = [
@@ -46,6 +47,7 @@ export const autoFills: autoFillType[] = [
     name: 'Analyze image',
     icon: <AnalyzeImageSVG />,
     startingText: 'Analyze the image by',
+    isPro: true,
     options: [
       'extracting tags',
       'identifying objects',
@@ -69,12 +71,14 @@ export const autoFills: autoFillType[] = [
   {
     name: 'Process Document',
     icon: <ProcessDocSVG />,
+    isPro: true,
     startingText: 'Process the data of',
     options: ['a report', 'an analysis', 'a presentation', 'a project', 'a task'],
   },
   {
     name: 'Analyze data',
     icon: <AnalyzeDataSVG />,
+    isPro: true,
     startingText: 'Analyze the data of',
     options: ['a report', 'an analysis', 'a presentation', 'a project', 'a task'],
   },

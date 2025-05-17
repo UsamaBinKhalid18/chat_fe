@@ -64,6 +64,7 @@ export function Home() {
                 sx={{
                   padding: 2,
                   borderRadius: 4,
+                  position: 'relative',
                   border: '1px solid,rgb(221, 221, 221)',
                   backgroundColor: 'background.paper',
                   '&:hover': {
@@ -71,8 +72,34 @@ export function Home() {
                   },
                   height: 64,
                 }}
-                onClick={() => setSuggestion(autoFill.startingText)}
+                onClick={() => {
+                  if (autoFill.isPro && !subscription.is_active) {
+                    return dispatch(setUpgradePlanModal(true));
+                  } else if (!user) {
+                    return dispatch(setLoginModal(true));
+                  } else {
+                    setSuggestion(autoFill.startingText);
+                  }
+                }}
               >
+                {autoFill.isPro && (
+                  <Typography
+                    position='absolute'
+                    top={'-1px'}
+                    left={'-1px'}
+                    fontSize={11}
+                    sx={{
+                      backgroundColor: '#ebebeb',
+                      color: '#a468fe',
+                      fontWeight: 700,
+                      padding: '1px 8px 1px 10px',
+                      borderTopLeftRadius: '16px',
+                      borderBottomRightRadius: '12px',
+                    }}
+                  >
+                    Pro
+                  </Typography>
+                )}
                 {React.cloneElement(autoFill.icon, {
                   htmlColor: utils.stringToColor(autoFill.name),
                 })}

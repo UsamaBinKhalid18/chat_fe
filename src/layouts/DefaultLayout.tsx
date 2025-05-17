@@ -13,7 +13,6 @@ import useResponsive from 'src/hooks/useResponsive';
 import UpgradePlan from 'src/pages/UpgradePlan';
 import { selectCurrentUser } from 'src/redux/reducers/authSlice';
 import { selectSubscription } from 'src/redux/reducers/subscriptionSlice';
-import { ref } from 'yup';
 
 export default function DefaultLayout() {
   const { isSmallerScreen } = useResponsive();
